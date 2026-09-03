@@ -1,0 +1,19 @@
+incident_id,asset_tag,opened_on,closed_on,priority,category,tech_id,description
+INC-0401,HR-L-0142,2026-05-12,2026-05-13,Medium,Hardware,T-01,Trackpad intermittently unresponsive after sleep
+INC-0405,HR-D-0031,2026-05-20,2026-05-20,Low,Software,T-03,Outlook profile corrupted; rebuilt
+INC-0409,HR-L-0159,2026-06-03,2026-06-05,High,Hardware,T-02,Screen flicker at low brightness; panel reseated
+INC-0412,HR-P-0260,2026-06-10,2026-06-10,Low,Hardware,T-03,Paper jam sensor fault; cleared
+INC-0414,HR-L-0142,2026-06-24,2026-06-26,Medium,Hardware,T-01,Trackpad again; driver rolled back
+INC-0417,HR-L-0142,2026-07-22,,High,Hardware,T-02,Won't charge on dock; battery at 61% health
+INC-0419,HR-P-0230,2026-07-22,2026-07-23,Medium,Hardware,T-02,Dock not passing power; firmware updated
+INC-0421,HR-L-0159,2026-07-29,,High,Hardware,T-02,Screen flicker returned; sent for repair
+INC-0423,HR-L-0204,2026-08-01,2026-08-01,Low,Access,T-03,MFA re-enrolment after phone replacement
+INC-0425,HR-D-0032,2026-08-04,2026-08-04,Low,Software,T-03,Printer driver reinstall
+INC-0427,HR-L-0171,2026-08-06,,Medium,Network,T-01,Drops Wi-Fi in conference room A only
+INC-0428,HR-D-0031,2026-08-11,,Medium,Hardware,T-01,Fan noise under load; thermal paste suspected
+INC-0430,HR-P-0230,2026-08-13,,High,Hardware,,Dock dead; no power LED; awaiting triage
+INC-0431,HR-L-0159,2026-08-18,,Critical,Hardware,T-02,Boot loop after repair return; user has no machine
+INC-0433,HR-L-0190,2026-08-20,2026-08-20,Low,Software,T-03,Teams add-in disabled by policy; re-enabled
+INC-0435,HR-P-0245,2026-08-25,,Low,Hardware,T-03,Left earcup crackle
+INC-0436,HR-L-0143,2026-08-27,,Medium,Hardware,T-01,Hinge loose; screen won't stay upright
+INC-0438,HR-D-0055,2026-09-01,,Low,Access,,Local admin request for dev tooling

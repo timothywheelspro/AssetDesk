@@ -1,0 +1,29 @@
+# .NET build output
+bin/
+obj/
+out/
+*.dll
+*.exe
+*.pdb
+
+# IDE and tooling
+.vs/
+.vscode/*
+!.vscode/settings.json
+!.vscode/launch.json
+!.vscode/tasks.json
+.idea/
+*.user
+*.suo
+*.swp
+*.DotSettings.user
+
+# Test and publish artefacts
+TestResults/
+*.trx
+publish/
+*.nupkg
+
+# OS noise
+.DS_Store
+Thumbs.db

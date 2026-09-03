@@ -1,0 +1,12 @@
+asset_tag,type,serial,model,purchase_date,purchase_cost,warranty_months,assigned_to,status
+HR-L-0142,Laptop,5CD1234ABC,HP EliteBook 840 G8,2022-03-14,1249.00,36,jmartinez,InService
+HR-L-0500,Laptop,5CD5000AAA,HP EliteBook 840 G8,not-a-date,1249.00,36,tcarver,InService
+HR-L-0501,Tablet,DMPX1234ABC,Apple iPad Air,2024-01-15,599.00,12,mreyes,InService
+HR-L-0502,Laptop,5CD5002AAA,HP EliteBook 840 G9,2024-01-15,-50.00,36,gmoreau,InService
+HR-L-0503,Laptop,5CD5003AAA,HP EliteBook 840 G9,2024-01-15,1389.00,thirty-six,lchen,InService
+,Laptop,5CD5004AAA,HP EliteBook 840 G9,2024-01-15,1389.00,36,pdesai,InService
+HR-L-0504,Laptop,5CD5005AAA,HP EliteBook 840 G9,2024-01-15,1389.00
+HR-L-0142,Laptop,DUPLICATE,Duplicate of the first row,2024-01-15,1389.00,36,ewalsh,InService
+HR-L-0505,Laptop,5CD5006AAA,HP EliteBook 840 G9,2024-01-15,1389.00,36,sbrennan,Broken
+
+HR-L-0506,Laptop,5CD5007AAA,HP EliteBook 840 G10,2024-06-01,1299.00,36,lchen,InService

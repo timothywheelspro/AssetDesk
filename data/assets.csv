@@ -1,0 +1,31 @@
+asset_tag,type,serial,model,purchase_date,purchase_cost,warranty_months,assigned_to,status
+HR-L-0099,Laptop,5CD9081XYZ,HP ProBook 450 G7,2020-09-30,899.00,36,ewalsh,Retired
+HR-L-0142,Laptop,5CD1234ABC,HP EliteBook 840 G8,2022-03-14,1249.00,36,jmartinez,InService
+HR-L-0143,Laptop,5CD1234ABD,HP EliteBook 840 G8,2022-03-14,1249.00,36,kpatel,InService
+HR-L-0158,Laptop,5CD22R7Q9M,HP EliteBook 840 G9,2023-01-09,1389.00,36,dnguyen,InService
+HR-L-0159,Laptop,5CD22R7QA1,HP EliteBook 840 G9,2023-01-09,1389.00,36,rokafor,InRepair
+HR-L-0171,Laptop,PF3K8W2L,Lenovo ThinkPad T14 Gen 3,2023-08-21,1425.00,36,sbrennan,InService
+HR-L-0172,Laptop,PF3K8W2M,Lenovo ThinkPad T14 Gen 3,2023-08-21,1425.00,36,lchen,InService
+HR-L-0190,Laptop,PF4X1C7T,Lenovo ThinkPad T14 Gen 4,2024-05-06,1510.00,36,mreyes,InService
+HR-L-0191,Laptop,PF4X1C7U,Lenovo ThinkPad T14 Gen 4,2024-05-06,1510.00,36,tcarver,InService
+HR-L-0204,Laptop,C02YW1ZKLVDL,Apple MacBook Pro 14 M3,2024-11-18,2199.00,12,aholloway,InService
+HR-L-0215,Laptop,5CD41B3N8K,HP EliteBook 845 G11,2025-06-02,1349.00,36,pdesai,InService
+HR-L-0216,Laptop,5CD41B3N8L,HP EliteBook 845 G11,2025-06-02,1349.00,36,,InService
+HR-D-0012,Desktop,MXL5555AAA,Dell OptiPlex 5070,2019-11-12,749.00,36,,Disposed
+HR-D-0031,Desktop,MXL9876XYZ,Dell OptiPlex 7090,2021-08-02,899.00,36,front-desk-2,InService
+HR-D-0032,Desktop,MXL9876XYA,Dell OptiPlex 7090,2021-08-02,899.00,36,front-desk-1,InService
+HR-D-0040,Desktop,MXL1A2B3C4,Dell OptiPlex 7000,2022-10-17,949.00,60,gmoreau,InService
+HR-D-0041,Desktop,MXL1A2B3C5,Dell OptiPlex 7000,2022-10-17,949.00,60,conf-room-a,InService
+HR-D-0055,Desktop,MXL7Q8R9S0,Dell OptiPlex 7010,2024-02-26,1029.00,36,lchen,InService
+HR-D-0056,Desktop,MXL7Q8R9S1,Dell OptiPlex 7010,2024-02-26,1029.00,36,dnguyen,InService
+HR-D-0060,Desktop,MXL3T4U5V6,Dell OptiPlex Micro 7020,2025-03-10,879.00,36,kpatel,InService
+HR-P-0180,Peripheral,,Dell WD15 Dock,2019-05-03,189.00,36,,Retired
+HR-P-0210,Peripheral,,Dell U2422H Monitor,2023-01-19,279.00,36,jmartinez,InService
+HR-P-0211,Peripheral,,Dell U2422H Monitor,2023-01-19,279.00,36,kpatel,InService
+HR-P-0230,Peripheral,,Dell WD19S Dock,2023-01-19,219.00,36,jmartinez,InRepair
+HR-P-0231,Peripheral,,Dell WD19S Dock,2023-01-19,219.00,36,rokafor,InService
+HR-P-0245,Peripheral,,Jabra Evolve2 65 Headset,2024-04-08,229.00,24,sbrennan,InService
+HR-P-0246,Peripheral,,Jabra Evolve2 65 Headset,2024-04-08,229.00,24,mreyes,InService
+HR-P-0260,Peripheral,VNB3C12345,HP LaserJet Pro M404dn,2021-06-15,349.00,12,front-desk-1,InService
+HR-P-0270,Peripheral,,Logitech MX Keys,2025-01-22,109.00,12,aholloway,InService
+HR-P-0275,Peripheral,,Dell P2723DE Monitor,2025-08-11,419.00,36,pdesai,InService
