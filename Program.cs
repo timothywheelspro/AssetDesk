@@ -1,14 +1,15 @@
 // AssetDesk — console endpoint inventory and incident tracker.
 // SIS250 course project. Entry point; module work lands here and under Domain/.
 //
-// Module 5: the `type` column picks a subclass (Laptop / Desktop / Peripheral)
-// in CreateAsset, and everything downstream works through the abstract Asset
-// contract — the roster loop never asks what kind of asset it is holding.
-// Parsing is still deliberately naive — the clean sample files are the only
-// input until the resilient importer arrives.
+// Module 6: assets come in through AssetCsvImporter, which never throws — bad
+// rows are reported and skipped, good rows still load. The program then runs
+// the importer against the deliberately broken file and a missing file to
+// prove the contract. Incidents are still parsed inline; they get the same
+// treatment when the course project integrates everything.
 
 using AssetDesk;
 using AssetDesk.Domain;
+using AssetDesk.Import;
 
 Console.WriteLine("AssetDesk");
 Console.WriteLine("Find the endpoints that are out of warranty or keep coming back — before they turn into tickets.");
@@ -17,18 +18,19 @@ Console.WriteLine();
 // ---------- Load: CSV rows -> objects -> Inventory ----------
 
 string dataDir = Path.Combine(AppContext.BaseDirectory, "data");
-string[] assetLines = File.ReadAllLines(Path.Combine(dataDir, "assets.csv"));
 string[] incidentLines = File.ReadAllLines(Path.Combine(dataDir, "incidents.csv"));
 
 Inventory inventory = new Inventory();
 
-for (int i = 1; i < assetLines.Length; i++)   // start at 1: skip the header row
+ImportResult assets = AssetCsvImporter.Import(Path.Combine(dataDir, "assets.csv"));
+for (int i = 0; i < assets.Imported.Length; i++)
 {
-    string[] f = assetLines[i].Split(',');
-    inventory.Add(CreateAsset(
-        type: f[1], tag: f[0], serial: f[2], model: f[3],
-        purchaseDate: DateOnly.Parse(f[4]), cost: decimal.Parse(f[5]), warrantyMonths: int.Parse(f[6]),
-        assignedTo: f[7], status: Enum.Parse<AssetStatus>(f[8])));
+    inventory.Add(assets.Imported[i]);
+}
+Console.WriteLine($"assets.csv: {assets}");
+for (int r = 0; r < assets.Rejected.Length; r++)
+{
+    Console.WriteLine($"  ! {assets.Rejected[r]}");
 }
 
 for (int j = 1; j < incidentLines.Length; j++)
@@ -120,22 +122,6 @@ for (int i = 0; i < sampleTags.Length; i++)
     Console.WriteLine($"      cycle {a.RefreshCycleMonths,2}mo  age {a.MonthsInService(asOf),2}mo  open {openCount}  value {a.CurrentValue(asOf),7:F2}  refresh: {a.IsRefreshEligible(asOf, openCount)}");
 }
 
-// Factory: the `type` column decides which subclass is built. This is the only
-// place in the program that names Laptop, Desktop, or Peripheral.
-static Asset CreateAsset(
-    string type, string tag, string serial, string model,
-    DateOnly purchaseDate, decimal cost, int warrantyMonths,
-    string assignedTo, AssetStatus status)
-{
-    switch (type)
-    {
-        case "Laptop":     return new Laptop(tag, serial, model, purchaseDate, cost, warrantyMonths, assignedTo, status);
-        case "Desktop":    return new Desktop(tag, serial, model, purchaseDate, cost, warrantyMonths, assignedTo, status);
-        case "Peripheral": return new Peripheral(tag, serial, model, purchaseDate, cost, warrantyMonths, assignedTo, status);
-        default:           throw new ArgumentException($"Unknown asset type '{type}' for {tag}.", nameof(type));
-    }
-}
-
 // Local helper: comma-joined tags from an Asset[].
 static string Tags(Asset[] assets)
 {
@@ -143,3 +129,30 @@ static string Tags(Asset[] assets)
     for (int i = 0; i < assets.Length; i++) s += (i == 0 ? "" : ", ") + assets[i].AssetTag;
     return s;
 }
+
+// ---------- Module 6 canary: the importer must survive the broken file and a missing file ----------
+
+Console.WriteLine();
+Console.WriteLine("Importer canary (must not throw):");
+
+ImportResult malformed = AssetCsvImporter.Import(Path.Combine(dataDir, "assets.malformed.csv"));
+Console.WriteLine($"  assets.malformed.csv: {malformed}");
+for (int r = 0; r < malformed.Rejected.Length; r++)
+{
+    Console.WriteLine($"    ! {malformed.Rejected[r]}");
+}
+for (int i = 0; i < malformed.Imported.Length; i++)
+{
+    Console.WriteLine($"    + {malformed.Imported[i].AssetTag} imported");
+}
+
+ImportResult missing = AssetCsvImporter.Import(Path.Combine(dataDir, "does-not-exist.csv"));
+Console.WriteLine($"  does-not-exist.csv:   {missing}");
+for (int r = 0; r < missing.Rejected.Length; r++)
+{
+    Console.WriteLine($"    ! {missing.Rejected[r]}");
+}
+
+bool canaryPassed = malformed.Imported.Length == 2 && malformed.Rejected.Length == 8
+                    && missing.Imported.Length == 0 && missing.Rejected.Length == 1;
+Console.WriteLine(canaryPassed ? "  CANARY PASSED: 2 imported, 8 rejected, 0 exceptions." : "  CANARY FAILED.");

@@ -41,7 +41,7 @@ Nothing on this page exists that doesn't earn grade points.
 | `Inventory` | M3 (arrays are M3, confirmed 2026-09-15) | Fixed-size arrays with a count; search / filter / summary. **Extractable array utility.** |
 | `Asset`, `Incident`, `Technician` | M4 (confirmed 2026-09-15) | Classes, encapsulation, constructor validation |
 | `Asset` → `Laptop` / `Desktop` / `Peripheral` | M5 (confirmed 2026-09-15) | Inheritance, abstract members, polymorphic dispatch |
-| `AssetCsvImporter`, `ImportResult`, `RejectedRow` | M6/M7? (confirm) | Exception handling, file processing. **Extractable file utility.** |
+| `AssetCsvImporter`, `ImportResult`, `RejectedRow` | M6 (confirmed 2026-09-15) | Exception handling, file processing. **Extractable file utility.** |
 | All of it + README | M8 | Course project |
 
 ### Migration note (M3 → M6)
@@ -155,7 +155,7 @@ abstract because the policies differ in *kind*, not just in number. Peripherals 
 failure-driven, not age-driven: no depreciation; refresh when `InRepair` or any open incident
 while out of warranty.
 
-## Class diagram 2 — data pipeline (M3 / M7)
+## Class diagram 2 — data pipeline (M3 / M6)
 
 ```mermaid
 classDiagram
@@ -206,7 +206,7 @@ classDiagram
     TriageRules ..> Inventory : reads
 ```
 
-- **M7:** `AssetCsvImporter` never throws on bad input. Missing file, locked file, malformed
+- **M6:** `AssetCsvImporter` never throws on bad input. Missing file, locked file, malformed
   row all land in `Rejected` with line + reason.
 - **M3:** `Inventory` uses fixed-size arrays with a count, not `List<T>`. Search, filter, and
   summary routines are the extractable utility.
@@ -341,7 +341,7 @@ public sealed class Laptop : Asset
 See `data/README.md` for column definitions. The `type` column is the factory switch inside
 `ParseRow`.
 
-### Rows the importer has to survive without throwing (M7 test cases)
+### Rows the importer has to survive without throwing (M6 test cases)
 
 - File doesn't exist → `ImportResult` with one rejected row (line 0, reason names the path)
 - File locked (`IOException`) → same shape, different reason

@@ -16,7 +16,8 @@ each module's work lands the week it is taught, so the log is dated proof of bui
 | M3 | `TriageRules` (static pure functions) **and** `Inventory` — **fixed-size arrays + a count field. NOT `List<T>`.** Parallel arrays until `Asset` exists. | methods, arrays |
 | M4 | `Domain/Asset`, `Incident`, `Technician` classes + enums; constructor validation; `Inventory` becomes an instance class holding `Asset[]` / `Incident[]` | classes, encapsulation |
 | M5 | `abstract Asset` → `sealed Laptop` / `Desktop` / `Peripheral`; policy moves from `TriageRules` switches into overrides | inheritance, abstract members, polymorphism |
-| M6+ | *(July plan: exceptions/files → project. Confirm from zyBook before building.)* | |
+| M6 | `Import/AssetCsvImporter`, `ImportResult`, `RejectedRow` — **never throws**; every failure is a `RejectedRow` with line + reason | exceptions, file I/O |
+| M7+ | *(confirm from zyBook before building)* | |
 | M5 | `Asset`, `Incident`, `Technician` classes; constructor validation | classes |
 | M6 | `abstract Asset` → `sealed Laptop/Desktop/Peripheral` | inheritance, polymorphism |
 | M7 | `AssetCsvImporter`, `ImportResult`, `RejectedRow` — **never throws** | exceptions, file I/O |
@@ -33,7 +34,7 @@ Commit prefix: `feat(M3): ...`, `refactor(M6): ...`, `docs(M8): ...`.
 - Target `net8.0`. `DateOnly` is confirmed and preferred over `DateTime` for dates.
 - `Inventory` (M3) uses fixed-size arrays with `_assetCount` / `_incidentCount`. Parallel primitive arrays in M3; refactored to `Asset[]` / `Incident[]` in M4 (classes, confirmed 2026-09-15).
   No `List<T>`, no LINQ over collections until M8 unless the module explicitly covers it.
-- `AssetCsvImporter` (M7) returns an `ImportResult`; every failure mode lands in `Rejected`
+- `AssetCsvImporter` (M6) returns an `ImportResult`; every failure mode lands in `Rejected`
   with line number and reason. Acceptance test: `data/assets.malformed.csv` →
   **2 imported, 8 rejected, 0 exceptions.** Blank line is skipped silently (documented choice).
 - Refresh policy per type is in `docs/ARCHITECTURE.md` §Subclass policies. Do not invent numbers.
