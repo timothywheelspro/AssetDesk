@@ -40,21 +40,22 @@ Nothing on this page exists that doesn't earn grade points.
 | `TriageRules` | M3 | Pure testable functions |
 | `Inventory` | M3 (arrays are M3, confirmed 2026-09-15) | Fixed-size arrays with a count; search / filter / summary. **Extractable array utility.** |
 | `Asset`, `Incident`, `Technician` | M4 (confirmed 2026-09-15) | Classes, encapsulation, constructor validation |
-| `Asset` → `Laptop` / `Desktop` / `Peripheral` | M5? (confirm) | Inheritance, abstract members, polymorphic dispatch |
+| `Asset` → `Laptop` / `Desktop` / `Peripheral` | M5 (confirmed 2026-09-15) | Inheritance, abstract members, polymorphic dispatch |
 | `AssetCsvImporter`, `ImportResult`, `RejectedRow` | M6/M7? (confirm) | Exception handling, file processing. **Extractable file utility.** |
 | All of it + README | M8 | Course project |
 
 ### Migration note (M3 → M6)
 
 In M3, warranty math and refresh policy are `static` functions in `TriageRules` that take
-primitives (`DateOnly`, `int`, `decimal`, `string assetType`). In M5/M6 the shared math moves
-into the abstract `Asset` base class and the per-type policy becomes the polymorphic
-`IsRefreshEligible` / `CurrentValue` overrides. `TriageRules` shrinks to the functions that
+primitives. In M4 the shared math moves into the `Asset` class (still one concrete type that
+branches on a string). In M5 `Asset` becomes abstract and the per-type policy becomes the
+polymorphic `IsRefreshEligible` / `CurrentValue` / `RefreshCycleMonths` overrides; the
+`switch` statements leave `TriageRules` entirely. `TriageRules` shrinks to the functions that
 operate over an `Inventory`. Both versions are kept in git history on purpose.
 
 ---
 
-## Class diagram 1 — domain model (M5 / M6)
+## Class diagram 1 — domain model (M4 / M5)
 
 ```mermaid
 classDiagram
@@ -212,7 +213,7 @@ classDiagram
 
 ---
 
-## The abstract `Asset` contract (M6 reference)
+## The abstract `Asset` contract (M5 reference)
 
 Identity is immutable after construction, custody is mutable, shared math is written once,
 and the two things that genuinely differ per type are the only things left abstract.
@@ -324,7 +325,7 @@ public sealed class Laptop : Asset
 | `Desktop` | 60 | Straight-line to zero over 60 months | Age ≥ 60 months, OR out of warranty with ≥ 3 open incidents | `Location` |
 | `Peripheral` | 0 (no schedule) | Always 0 — expensed at purchase | Status is `InRepair`, OR any open incident while out of warranty | `PeripheralKind` — Monitor, Dock, Headset, Printer |
 
-### Why an abstract class and not an interface (M6 design note)
+### Why an abstract class and not an interface (M5 design note)
 
 - `Asset` owns real state and real shared logic. An interface can't carry that.
 - The three refresh policies differ in **kind** — age-driven vs failure-driven — not just in a

@@ -1,9 +1,10 @@
-// TriageRules.cs — Module 3: the triage logic as pure, testable functions.
+// TriageRules.cs — the triage logic that is not about any one asset type.
 //
-// Every function here takes primitives and returns a value. No state, no I/O.
-// Since Module 4, Asset calls these on its own fields, so the policy numbers
-// still live in exactly one place. Policies come from docs/ARCHITECTURE.md
-// §Subclass policies.
+// Module 3: every rule lived here as a static function over primitives,
+// including the per-type policy as switch statements on a string.
+// Module 5: the per-type policy moved into Laptop / Desktop / Peripheral
+// overrides, so the switches are gone. What remains is the math and the
+// rules that operate across assets or incidents rather than inside one.
 
 using AssetDesk.Domain;
 
@@ -11,19 +12,7 @@ namespace AssetDesk;
 
 public static class TriageRules
 {
-    // ---------- Warranty math ----------
-
-    /// <summary>Date the warranty runs out.</summary>
-    public static DateOnly WarrantyExpires(DateOnly purchaseDate, int warrantyMonths)
-    {
-        return purchaseDate.AddMonths(warrantyMonths);
-    }
-
-    /// <summary>True once the as-of date is past the warranty end date.</summary>
-    public static bool IsOutOfWarranty(DateOnly purchaseDate, int warrantyMonths, DateOnly asOf)
-    {
-        return asOf > WarrantyExpires(purchaseDate, warrantyMonths);
-    }
+    // ---------- Date math (shared by Asset; kept here so it stays testable on primitives) ----------
 
     /// <summary>Whole months between purchase and asOf, never negative.</summary>
     public static int MonthsInService(DateOnly purchaseDate, DateOnly asOf)
@@ -39,72 +28,7 @@ public static class TriageRules
         return months < 0 ? 0 : months;
     }
 
-    // ---------- Per-type policy (decisions) ----------
-
-    /// <summary>The three asset types the policy table knows about.</summary>
-    public static bool IsKnownType(string assetType)
-    {
-        return assetType == "Laptop" || assetType == "Desktop" || assetType == "Peripheral";
-    }
-
-    /// <summary>Planned service life by asset type. Zero means "no schedule; replace on failure".</summary>
-    public static int RefreshCycleMonths(string assetType)
-    {
-        switch (assetType)
-        {
-            case "Laptop":     return 36;
-            case "Desktop":    return 60;
-            case "Peripheral": return 0;
-            default:           return 0;
-        }
-    }
-
-    /// <summary>Straight-line book value: cost shrinks to zero evenly over lifeMonths.</summary>
-    public static decimal CurrentValue(decimal purchaseCost, int monthsInService, int lifeMonths)
-    {
-        if (lifeMonths <= 0)
-        {
-            return 0m; // expensed at purchase (peripherals)
-        }
-
-        decimal remainingFraction = 1m - (decimal)monthsInService / lifeMonths;
-
-        if (remainingFraction < 0m) remainingFraction = 0m;
-        if (remainingFraction > 1m) remainingFraction = 1m;
-
-        return Math.Round(purchaseCost * remainingFraction, 2);
-    }
-
-    /// <summary>
-    /// Should this asset be flagged for replacement? Age-driven for computers,
-    /// failure-driven for peripherals — so the rule branches on type, not just on a number.
-    /// </summary>
-    public static bool IsRefreshEligible(
-        string assetType,
-        string status,
-        int monthsInService,
-        bool outOfWarranty,
-        int openIncidents)
-    {
-        int cycle = RefreshCycleMonths(assetType);
-
-        if (assetType == "Laptop")
-        {
-            return monthsInService >= cycle || (outOfWarranty && openIncidents >= 2);
-        }
-
-        if (assetType == "Desktop")
-        {
-            return monthsInService >= cycle || (outOfWarranty && openIncidents >= 3);
-        }
-
-        if (assetType == "Peripheral")
-        {
-            return status == "InRepair" || (outOfWarranty && openIncidents >= 1);
-        }
-
-        return false;
-    }
+    // ---------- Cross-asset rules ----------
 
     /// <summary>Repeat offender: the asset has generated at least `threshold` incidents.</summary>
     public static bool IsRepeatOffender(int incidentCount, int threshold)
@@ -123,12 +47,6 @@ public static class TriageRules
             case "Low":      return 1;
             default:         return 0;
         }
-    }
-
-    /// <summary>Retired and Disposed assets are out of scope for triage.</summary>
-    public static bool IsActive(string status)
-    {
-        return status != "Retired" && status != "Disposed";
     }
 
     /// <summary>

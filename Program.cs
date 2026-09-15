@@ -1,10 +1,11 @@
 // AssetDesk — console endpoint inventory and incident tracker.
 // SIS250 course project. Entry point; module work lands here and under Domain/.
 //
-// Module 4: CSV rows become Asset and Incident objects, Inventory holds them,
-// and each asset answers questions about itself. Parsing is still deliberately
-// naive — the clean sample files are the only input until the resilient
-// importer arrives.
+// Module 5: the `type` column picks a subclass (Laptop / Desktop / Peripheral)
+// in CreateAsset, and everything downstream works through the abstract Asset
+// contract — the roster loop never asks what kind of asset it is holding.
+// Parsing is still deliberately naive — the clean sample files are the only
+// input until the resilient importer arrives.
 
 using AssetDesk;
 using AssetDesk.Domain;
@@ -24,9 +25,9 @@ Inventory inventory = new Inventory();
 for (int i = 1; i < assetLines.Length; i++)   // start at 1: skip the header row
 {
     string[] f = assetLines[i].Split(',');
-    inventory.Add(new Asset(
-        assetTag: f[0], assetType: f[1], serialNumber: f[2], model: f[3],
-        purchaseDate: DateOnly.Parse(f[4]), purchaseCost: decimal.Parse(f[5]), warrantyMonths: int.Parse(f[6]),
+    inventory.Add(CreateAsset(
+        type: f[1], tag: f[0], serial: f[2], model: f[3],
+        purchaseDate: DateOnly.Parse(f[4]), cost: decimal.Parse(f[5]), warrantyMonths: int.Parse(f[6]),
         assignedTo: f[7], status: Enum.Parse<AssetStatus>(f[8])));
 }
 
@@ -100,11 +101,40 @@ for (int j = 0; j < open.Length; j++)
 }
 Console.WriteLine();
 
-// Search: the linear search now hands back the object, not a row number.
+// Search: the linear search hands back the object, not a row number.
 Asset? found = inventory.FindByTag("HR-L-0159");
 Console.WriteLine(found != null
     ? $"Lookup HR-L-0159:           {found.Model}, assigned to {found.AssignedTo}, {found.Status}"
     : "Lookup HR-L-0159:           not found");
+Console.WriteLine();
+
+// Polymorphism check: one loop, one call, three different policies answering.
+Console.WriteLine("Refresh policy by type (one call, three overrides):");
+string[] sampleTags = { "HR-L-0171", "HR-D-0031", "HR-P-0230" };
+for (int i = 0; i < sampleTags.Length; i++)
+{
+    Asset? a = inventory.FindByTag(sampleTags[i]);
+    if (a == null) continue;
+    int openCount = inventory.OpenIncidentCount(a.AssetTag);
+    Console.WriteLine($"  {a.ToRosterLine()}");
+    Console.WriteLine($"      cycle {a.RefreshCycleMonths,2}mo  age {a.MonthsInService(asOf),2}mo  open {openCount}  value {a.CurrentValue(asOf),7:F2}  refresh: {a.IsRefreshEligible(asOf, openCount)}");
+}
+
+// Factory: the `type` column decides which subclass is built. This is the only
+// place in the program that names Laptop, Desktop, or Peripheral.
+static Asset CreateAsset(
+    string type, string tag, string serial, string model,
+    DateOnly purchaseDate, decimal cost, int warrantyMonths,
+    string assignedTo, AssetStatus status)
+{
+    switch (type)
+    {
+        case "Laptop":     return new Laptop(tag, serial, model, purchaseDate, cost, warrantyMonths, assignedTo, status);
+        case "Desktop":    return new Desktop(tag, serial, model, purchaseDate, cost, warrantyMonths, assignedTo, status);
+        case "Peripheral": return new Peripheral(tag, serial, model, purchaseDate, cost, warrantyMonths, assignedTo, status);
+        default:           throw new ArgumentException($"Unknown asset type '{type}' for {tag}.", nameof(type));
+    }
+}
 
 // Local helper: comma-joined tags from an Asset[].
 static string Tags(Asset[] assets)

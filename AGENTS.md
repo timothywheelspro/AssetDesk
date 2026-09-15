@@ -15,7 +15,8 @@ each module's work lands the week it is taught, so the log is dated proof of bui
 | M2 | `Program` loops over the CSV rows | decisions, loops |
 | M3 | `TriageRules` (static pure functions) **and** `Inventory` — **fixed-size arrays + a count field. NOT `List<T>`.** Parallel arrays until `Asset` exists. | methods, arrays |
 | M4 | `Domain/Asset`, `Incident`, `Technician` classes + enums; constructor validation; `Inventory` becomes an instance class holding `Asset[]` / `Incident[]` | classes, encapsulation |
-| M5+ | *(July plan: inheritance → exceptions/files → project. Confirm each from zyBook before building.)* | |
+| M5 | `abstract Asset` → `sealed Laptop` / `Desktop` / `Peripheral`; policy moves from `TriageRules` switches into overrides | inheritance, abstract members, polymorphism |
+| M6+ | *(July plan: exceptions/files → project. Confirm from zyBook before building.)* | |
 | M5 | `Asset`, `Incident`, `Technician` classes; constructor validation | classes |
 | M6 | `abstract Asset` → `sealed Laptop/Desktop/Peripheral` | inheritance, polymorphism |
 | M7 | `AssetCsvImporter`, `ImportResult`, `RejectedRow` — **never throws** | exceptions, file I/O |
@@ -23,7 +24,7 @@ each module's work lands the week it is taught, so the log is dated proof of bui
 
 **Do not build ahead.** If a later module's construct would make this week's code nicer,
 write the simpler version now and refactor it when that module arrives. The refactor commit
-is itself evidence (e.g. M3's static warranty math and parallel arrays move into `Asset` / `Asset[]` when classes arrive).
+is itself evidence (M3 static math → M4 `Asset` members → M5 subclass overrides; each step is a dated commit).
 
 Commit prefix: `feat(M3): ...`, `refactor(M6): ...`, `docs(M8): ...`.
 

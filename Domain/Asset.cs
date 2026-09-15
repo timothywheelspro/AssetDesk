@@ -1,11 +1,10 @@
-// Domain/Asset.cs — Module 4: one tracked endpoint as a class.
+// Domain/Asset.cs — Module 5: the base contract for every tracked endpoint.
 //
-// Identity is fixed at construction and validated once, in the constructor, so
-// no code path can produce an invalid asset. Custody (who has it, what state
-// it's in) is mutable. The warranty math that lived in TriageRules as static
-// functions over primitives now lives here as instance members over the
-// asset's own fields. The per-type policy still branches on AssetType; when
-// inheritance arrives that branch becomes three subclasses.
+// Identity is fixed at construction and validated once, here, so no subclass
+// can produce an invalid asset. Shared math (warranty, months in service,
+// straight-line depreciation) is written once. The two things that genuinely
+// differ per type — what the asset is worth and when it should be replaced —
+// are abstract, because the policies differ in kind, not just in number.
 
 namespace AssetDesk.Domain;
 
@@ -18,13 +17,12 @@ public enum AssetStatus
     Disposed
 }
 
-public class Asset
+public abstract class Asset
 {
     // ---------- Identity: fixed at intake, never mutated ----------
 
     /// <summary>Inventory tag, normalised to upper-case. The primary key across the whole app.</summary>
     public string AssetTag { get; }
-    public string AssetType { get; }          // "Laptop" | "Desktop" | "Peripheral"
     public string SerialNumber { get; }
     public string Model { get; }
     public DateOnly PurchaseDate { get; }
@@ -37,28 +35,24 @@ public class Asset
     public string AssignedTo { get; set; }
     public AssetStatus Status { get; set; }
 
-    public Asset(
+    protected Asset(
         string assetTag,
-        string assetType,
         string serialNumber,
         string model,
         DateOnly purchaseDate,
         decimal purchaseCost,
         int warrantyMonths,
-        string assignedTo = "",
-        AssetStatus status = AssetStatus.InService)
+        string assignedTo,
+        AssetStatus status)
     {
         if (string.IsNullOrWhiteSpace(assetTag))
             throw new ArgumentException("Asset tag is required.", nameof(assetTag));
-        if (!TriageRules.IsKnownType(assetType))
-            throw new ArgumentException($"Unknown asset type '{assetType}'.", nameof(assetType));
         if (purchaseCost < 0m)
             throw new ArgumentOutOfRangeException(nameof(purchaseCost), "Cost cannot be negative.");
         if (warrantyMonths < 0)
             throw new ArgumentOutOfRangeException(nameof(warrantyMonths), "Warranty months cannot be negative.");
 
         AssetTag = assetTag.Trim().ToUpperInvariant();
-        AssetType = assetType;
         SerialNumber = serialNumber?.Trim() ?? string.Empty;
         Model = model?.Trim() ?? string.Empty;
         PurchaseDate = purchaseDate;
@@ -68,7 +62,24 @@ public class Asset
         Status = status;
     }
 
-    // ---------- Shared behaviour: the asset answers questions about itself ----------
+    // ---------- The contract: every concrete type MUST answer these ----------
+
+    /// <summary>Type label used in reports: "Laptop", "Desktop", "Peripheral".</summary>
+    public abstract string AssetType { get; }
+
+    /// <summary>Planned service life in months. Zero means "no schedule; replace on failure".</summary>
+    public abstract int RefreshCycleMonths { get; }
+
+    /// <summary>Book value on the given date under this type's depreciation policy.</summary>
+    public abstract decimal CurrentValue(DateOnly asOf);
+
+    /// <summary>
+    /// True when this asset should be flagged for replacement. Age-driven for computers,
+    /// failure-driven for peripherals — which is why it is abstract and not a number.
+    /// </summary>
+    public abstract bool IsRefreshEligible(DateOnly asOf, int openIncidentCount);
+
+    // ---------- Shared behaviour: written once here, inherited by every type ----------
 
     public DateOnly WarrantyExpires => PurchaseDate.AddMonths(WarrantyMonths);
 
@@ -80,20 +91,20 @@ public class Asset
     /// <summary>Retired and Disposed assets are out of scope for triage.</summary>
     public bool IsActive => Status != AssetStatus.Retired && Status != AssetStatus.Disposed;
 
-    /// <summary>Planned service life for this type. Zero means "replace on failure".</summary>
-    public int RefreshCycleMonths => TriageRules.RefreshCycleMonths(AssetType);
+    /// <summary>Straight-line depreciation to zero over lifeMonths. Subclasses opt in by calling it.</summary>
+    protected decimal StraightLineValue(DateOnly asOf, int lifeMonths)
+    {
+        if (lifeMonths <= 0) return 0m;
 
-    /// <summary>Book value on the given date under this type's depreciation policy.</summary>
-    public decimal CurrentValue(DateOnly asOf) =>
-        TriageRules.CurrentValue(PurchaseCost, MonthsInService(asOf), RefreshCycleMonths);
+        decimal remainingFraction = 1m - (decimal)MonthsInService(asOf) / lifeMonths;
+        if (remainingFraction < 0m) remainingFraction = 0m;
+        if (remainingFraction > 1m) remainingFraction = 1m;
 
-    /// <summary>Should this asset be flagged for replacement, given how many of its incidents are open?</summary>
-    public bool IsRefreshEligible(DateOnly asOf, int openIncidentCount) =>
-        IsActive && TriageRules.IsRefreshEligible(
-            AssetType, Status.ToString(), MonthsInService(asOf), IsOutOfWarranty(asOf), openIncidentCount);
+        return Math.Round(PurchaseCost * remainingFraction, 2);
+    }
 
-    /// <summary>One fixed-width roster line.</summary>
-    public string ToRosterLine() =>
+    /// <summary>One fixed-width roster line. Subclasses may override to append type-specific detail.</summary>
+    public virtual string ToRosterLine() =>
         $"{AssetTag,-10} {AssetType,-11} {Model,-24} {Status,-10} {(AssignedTo == "" ? "(unassigned)" : AssignedTo)}";
 
     public override string ToString() => ToRosterLine();
