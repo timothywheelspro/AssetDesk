@@ -1,0 +1,12 @@
+incident_id,asset_tag,opened_on,closed_on,priority,category,tech_id,description
+INC-9001,HR-L-0142,2026-09-01,2026-09-02,Medium,Hardware,T-01,Control row; valid
+INC-9002,HR-L-0143,not-a-date,,High,Hardware,T-02,Bad opened_on
+INC-9003,HR-L-0158,2026-09-05,2026-09-01,Low,Software,T-03,Closed before opened
+INC-9004,HR-D-0031,2026-09-05,,Urgent,Hardware,T-01,Unknown priority
+INC-9005,HR-D-0032,2026-09-05,,Low,Facilities,T-03,Unknown category
+,HR-L-0171,2026-09-06,,Medium,Network,T-01,Blank incident_id
+INC-9001,HR-L-0172,2026-09-06,,Low,Access,T-03,Duplicate of the first row
+INC-9006,HR-X-9999,2026-09-07,,High,Hardware,T-02,Asset tag not in inventory
+INC-9007,HR-P-0210,2026-09-07,,Low,Hardware
+INC-9008,HR-P-0270,2026-09-08,,Low,Hardware,T-03,Keyboard sticky, coffee spill, keys replaced
+

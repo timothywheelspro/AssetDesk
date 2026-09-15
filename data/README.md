@@ -60,3 +60,21 @@ different way. Expected result: **2 imported, 8 rejected**, no exception.
 
 Whether the blank line counts as a rejection or is skipped silently is a
 design choice; pick one and document it.
+
+## incidents.malformed.csv — the file the incident importer has to survive
+
+Same schema as `incidents.csv`. Expected result: **2 imported, 8 rejected**, no exception.
+
+| Row | Problem |
+|---|---|
+| 2 | Valid — control row |
+| 3 | `opened_on` is not a date |
+| 4 | `closed_on` is before `opened_on` |
+| 5 | Unknown `priority` (`Urgent`) |
+| 6 | Unknown `category` (`Facilities`) |
+| 7 | Blank `incident_id` |
+| 8 | Duplicate `incident_id` (same as row 2) |
+| 9 | `asset_tag` not in the inventory (`HR-X-9999`) |
+| 10 | Too few columns |
+| 11 | Valid — description contains commas, which must be rejoined, not treated as extra columns |
+| 12 | Blank line — skipped silently |

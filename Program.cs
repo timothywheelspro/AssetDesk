@@ -4,8 +4,8 @@
 // Module 6: assets come in through AssetCsvImporter, which never throws — bad
 // rows are reported and skipped, good rows still load. The program then runs
 // the importer against the deliberately broken file and a missing file to
-// prove the contract. Incidents are still parsed inline; they get the same
-// treatment when the course project integrates everything.
+// prove the contract. Incidents come in the same way, cross-checked against
+// the inventory so a ticket can't point at a machine we don't track.
 
 using AssetDesk;
 using AssetDesk.Domain;
@@ -18,8 +18,6 @@ Console.WriteLine();
 // ---------- Load: CSV rows -> objects -> Inventory ----------
 
 string dataDir = Path.Combine(AppContext.BaseDirectory, "data");
-string[] incidentLines = File.ReadAllLines(Path.Combine(dataDir, "incidents.csv"));
-
 Inventory inventory = new Inventory();
 
 ImportResult assets = AssetCsvImporter.Import(Path.Combine(dataDir, "assets.csv"));
@@ -33,16 +31,15 @@ for (int r = 0; r < assets.Rejected.Length; r++)
     Console.WriteLine($"  ! {assets.Rejected[r]}");
 }
 
-for (int j = 1; j < incidentLines.Length; j++)
+IncidentImportResult incidents = IncidentCsvImporter.Import(Path.Combine(dataDir, "incidents.csv"), inventory);
+for (int j = 0; j < incidents.Imported.Length; j++)
 {
-    string[] f = incidentLines[j].Split(',');
-    inventory.Log(new Incident(
-        incidentId: f[0], assetTag: f[1],
-        openedOn: DateOnly.Parse(f[2]),
-        closedOn: f[3] == "" ? null : DateOnly.Parse(f[3]),
-        priority: Enum.Parse<IncidentPriority>(f[4]),
-        category: Enum.Parse<IncidentCategory>(f[5]),
-        techId: f[6], description: f[7]));
+    inventory.Log(incidents.Imported[j]);
+}
+Console.WriteLine($"incidents.csv: {incidents}");
+for (int r = 0; r < incidents.Rejected.Length; r++)
+{
+    Console.WriteLine($"  ! {incidents.Rejected[r]}");
 }
 
 DateOnly asOf = DateOnly.FromDateTime(DateTime.Today);
@@ -146,6 +143,17 @@ for (int i = 0; i < malformed.Imported.Length; i++)
     Console.WriteLine($"    + {malformed.Imported[i].AssetTag} imported");
 }
 
+IncidentImportResult malformedIncidents = IncidentCsvImporter.Import(Path.Combine(dataDir, "incidents.malformed.csv"), inventory);
+Console.WriteLine($"  incidents.malformed.csv: {malformedIncidents}");
+for (int r = 0; r < malformedIncidents.Rejected.Length; r++)
+{
+    Console.WriteLine($"    ! {malformedIncidents.Rejected[r]}");
+}
+for (int j = 0; j < malformedIncidents.Imported.Length; j++)
+{
+    Console.WriteLine($"    + {malformedIncidents.Imported[j].IncidentId} imported: {malformedIncidents.Imported[j].Description}");
+}
+
 ImportResult missing = AssetCsvImporter.Import(Path.Combine(dataDir, "does-not-exist.csv"));
 Console.WriteLine($"  does-not-exist.csv:   {missing}");
 for (int r = 0; r < missing.Rejected.Length; r++)
@@ -154,5 +162,8 @@ for (int r = 0; r < missing.Rejected.Length; r++)
 }
 
 bool canaryPassed = malformed.Imported.Length == 2 && malformed.Rejected.Length == 8
+                    && malformedIncidents.Imported.Length == 2 && malformedIncidents.Rejected.Length == 8
                     && missing.Imported.Length == 0 && missing.Rejected.Length == 1;
-Console.WriteLine(canaryPassed ? "  CANARY PASSED: 2 imported, 8 rejected, 0 exceptions." : "  CANARY FAILED.");
+Console.WriteLine(canaryPassed
+    ? "  CANARY PASSED: assets 2/8, incidents 2/8, missing file 0/1, 0 exceptions."
+    : "  CANARY FAILED.");
