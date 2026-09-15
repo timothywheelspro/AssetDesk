@@ -1,9 +1,11 @@
 // TriageRules.cs — Module 3: the triage logic as pure, testable functions.
 //
-// Every function here takes primitives and returns a value. No state, no I/O, no
-// classes. That keeps each rule independently checkable from Program.cs (M3) and
-// lets the same math move into the Asset hierarchy in M5/M6 without changing what
-// it computes. Policies come from docs/ARCHITECTURE.md §Subclass policies.
+// Every function here takes primitives and returns a value. No state, no I/O.
+// Since Module 4, Asset calls these on its own fields, so the policy numbers
+// still live in exactly one place. Policies come from docs/ARCHITECTURE.md
+// §Subclass policies.
+
+using AssetDesk.Domain;
 
 namespace AssetDesk;
 
@@ -38,6 +40,12 @@ public static class TriageRules
     }
 
     // ---------- Per-type policy (decisions) ----------
+
+    /// <summary>The three asset types the policy table knows about.</summary>
+    public static bool IsKnownType(string assetType)
+    {
+        return assetType == "Laptop" || assetType == "Desktop" || assetType == "Peripheral";
+    }
 
     /// <summary>Planned service life by asset type. Zero means "no schedule; replace on failure".</summary>
     public static int RefreshCycleMonths(string assetType)
@@ -121,5 +129,33 @@ public static class TriageRules
     public static bool IsActive(string status)
     {
         return status != "Retired" && status != "Disposed";
+    }
+
+    /// <summary>
+    /// Copy of the input sorted highest priority first (selection sort on a fixed
+    /// array — no LINQ). Ties keep their original order.
+    /// </summary>
+    public static Incident[] SortByPriority(Incident[] incidents)
+    {
+        Incident[] sorted = new Incident[incidents.Length];
+        for (int i = 0; i < incidents.Length; i++) sorted[i] = incidents[i];
+
+        for (int i = 0; i < sorted.Length - 1; i++)
+        {
+            int best = i;
+            for (int j = i + 1; j < sorted.Length; j++)
+            {
+                if (sorted[j].PriorityRank > sorted[best].PriorityRank) best = j;
+            }
+            if (best != i)
+            {
+                // Shift the block right so equal-priority items keep their order.
+                Incident top = sorted[best];
+                for (int k = best; k > i; k--) sorted[k] = sorted[k - 1];
+                sorted[i] = top;
+            }
+        }
+
+        return sorted;
     }
 }

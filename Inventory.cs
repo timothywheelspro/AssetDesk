@@ -1,221 +1,156 @@
-// Inventory.cs — Module 3: the in-memory roster as fixed-size arrays with a count.
+// Inventory.cs — Module 4: the in-memory roster as an instance class holding
+// Asset[] and Incident[] with a count each.
 //
-// This is the extractable array utility. It stores every asset and incident
-// column in its own array (parallel arrays) with one count per table, and
-// exposes search, filter, and summary routines over them. No List<T>, no LINQ.
-//
-// Parallel arrays are the pre-class way to hold a record; when Asset and
-// Incident become classes these collapse into Asset[] and Incident[] and every
-// public method below keeps its name and meaning.
+// In Module 3 this was seventeen parallel primitive arrays. Now that Asset and
+// Incident are classes, each table is one array of objects. Every public
+// method keeps its Module 3 name and meaning; what changed is that a row is
+// now a thing you can hand to someone. Still no List<T>, still no LINQ.
+
+using AssetDesk.Domain;
 
 namespace AssetDesk;
 
-public static class Inventory
+public class Inventory
 {
-    // ---------- Capacity: fixed at compile time; Add/Log refuse when full ----------
-
     public const int MaxAssets = 64;
     public const int MaxIncidents = 256;
 
-    // ---------- Asset table (one row per asset, indexed 0.._assetCount-1) ----------
+    private readonly Asset[] _assets = new Asset[MaxAssets];
+    private readonly Incident[] _incidents = new Incident[MaxIncidents];
+    private int _assetCount = 0;
+    private int _incidentCount = 0;
 
-    private static readonly string[]   _tags           = new string[MaxAssets];
-    private static readonly string[]   _types          = new string[MaxAssets];
-    private static readonly string[]   _serials        = new string[MaxAssets];
-    private static readonly string[]   _models         = new string[MaxAssets];
-    private static readonly DateOnly[] _purchaseDates  = new DateOnly[MaxAssets];
-    private static readonly decimal[]  _purchaseCosts  = new decimal[MaxAssets];
-    private static readonly int[]      _warrantyMonths = new int[MaxAssets];
-    private static readonly string[]   _assignedTo     = new string[MaxAssets];
-    private static readonly string[]   _statuses       = new string[MaxAssets];
-    private static int _assetCount = 0;
-
-    // ---------- Incident table ----------
-
-    private static readonly string[]   _incidentIds    = new string[MaxIncidents];
-    private static readonly string[]   _incidentTags   = new string[MaxIncidents];
-    private static readonly DateOnly[] _openedOn       = new DateOnly[MaxIncidents];
-    private static readonly string[]   _closedOn       = new string[MaxIncidents];   // "" = still open
-    private static readonly string[]   _priorities     = new string[MaxIncidents];
-    private static readonly string[]   _categories     = new string[MaxIncidents];
-    private static readonly string[]   _techIds        = new string[MaxIncidents];
-    private static readonly string[]   _descriptions   = new string[MaxIncidents];
-    private static int _incidentCount = 0;
-
-    public static int AssetCount => _assetCount;
-    public static int IncidentCount => _incidentCount;
+    public int AssetCount => _assetCount;
+    public int IncidentCount => _incidentCount;
 
     // ---------- Loading ----------
 
     /// <summary>Append one asset. Returns false (and stores nothing) when the table is full.</summary>
-    public static bool Add(
-        string tag, string type, string serial, string model,
-        DateOnly purchaseDate, decimal purchaseCost, int warrantyMonths,
-        string assignedTo, string status)
+    public bool Add(Asset asset)
     {
-        if (_assetCount >= MaxAssets)
-        {
-            return false;
-        }
-
-        int i = _assetCount;
-        _tags[i] = tag;
-        _types[i] = type;
-        _serials[i] = serial;
-        _models[i] = model;
-        _purchaseDates[i] = purchaseDate;
-        _purchaseCosts[i] = purchaseCost;
-        _warrantyMonths[i] = warrantyMonths;
-        _assignedTo[i] = assignedTo;
-        _statuses[i] = status;
-        _assetCount++;
+        if (_assetCount >= MaxAssets) return false;
+        _assets[_assetCount++] = asset;
         return true;
     }
 
     /// <summary>Append one incident. Returns false when the table is full.</summary>
-    public static bool Log(
-        string incidentId, string assetTag, DateOnly openedOn, string closedOn,
-        string priority, string category, string techId, string description)
+    public bool Log(Incident incident)
     {
-        if (_incidentCount >= MaxIncidents)
-        {
-            return false;
-        }
-
-        int i = _incidentCount;
-        _incidentIds[i] = incidentId;
-        _incidentTags[i] = assetTag;
-        _openedOn[i] = openedOn;
-        _closedOn[i] = closedOn;
-        _priorities[i] = priority;
-        _categories[i] = category;
-        _techIds[i] = techId;
-        _descriptions[i] = description;
-        _incidentCount++;
+        if (_incidentCount >= MaxIncidents) return false;
+        _incidents[_incidentCount++] = incident;
         return true;
     }
 
-    // ---------- Row access (by index, for callers that iterate the table) ----------
+    // ---------- Row access ----------
 
-    public static string   TagAt(int i)            => _tags[i];
-    public static string   TypeAt(int i)           => _types[i];
-    public static string   ModelAt(int i)          => _models[i];
-    public static DateOnly PurchaseDateAt(int i)   => _purchaseDates[i];
-    public static decimal  PurchaseCostAt(int i)   => _purchaseCosts[i];
-    public static int      WarrantyMonthsAt(int i) => _warrantyMonths[i];
-    public static string   AssignedToAt(int i)     => _assignedTo[i];
-    public static string   StatusAt(int i)         => _statuses[i];
+    public Asset AssetAt(int i) => _assets[i];
+    public Incident IncidentAt(int j) => _incidents[j];
 
     // ---------- Search ----------
 
-    /// <summary>Linear search by tag. Returns the row index, or -1 when not found.</summary>
-    public static int FindByTag(string tag)
+    /// <summary>Linear search by tag. Returns the asset, or null when not found.</summary>
+    public Asset? FindByTag(string tag)
     {
+        string key = tag.Trim().ToUpperInvariant();
         for (int i = 0; i < _assetCount; i++)
         {
-            if (_tags[i] == tag)
-            {
-                return i;
-            }
+            if (_assets[i].AssetTag == key) return _assets[i];
         }
-
-        return -1;
+        return null;
     }
 
     /// <summary>How many incidents (open or closed) reference this tag.</summary>
-    public static int IncidentCountFor(string tag)
+    public int IncidentCountFor(string tag)
     {
         int n = 0;
-
         for (int j = 0; j < _incidentCount; j++)
         {
-            if (_incidentTags[j] == tag)
-            {
-                n++;
-            }
+            if (_incidents[j].AssetTag == tag) n++;
         }
-
         return n;
     }
 
-    /// <summary>How many incidents for this tag are still open (blank closed_on).</summary>
-    public static int OpenIncidentCount(string tag)
+    /// <summary>How many incidents for this tag are still open.</summary>
+    public int OpenIncidentCount(string tag)
     {
         int n = 0;
-
         for (int j = 0; j < _incidentCount; j++)
         {
-            if (_incidentTags[j] == tag && _closedOn[j] == "")
-            {
-                n++;
-            }
+            if (_incidents[j].AssetTag == tag && _incidents[j].IsOpen) n++;
         }
-
         return n;
     }
 
-    // ---------- Filters: each returns an exact-size array of tags ----------
-    // Two passes: count the matches, size the result, fill it. That is the price
-    // of a fixed-size array and the reason List<T> exists — which is the point.
-
-    public static string[] OutOfWarranty(DateOnly asOf)
+    /// <summary>Exact-size copy of every open incident.</summary>
+    public Incident[] OpenIncidents()
     {
         int matches = 0;
-        for (int i = 0; i < _assetCount; i++)
-        {
-            if (IsOutOfWarrantyRow(i, asOf)) matches++;
-        }
+        for (int j = 0; j < _incidentCount; j++) if (_incidents[j].IsOpen) matches++;
 
-        string[] result = new string[matches];
+        Incident[] result = new Incident[matches];
         int k = 0;
-        for (int i = 0; i < _assetCount; i++)
-        {
-            if (IsOutOfWarrantyRow(i, asOf)) result[k++] = _tags[i];
-        }
-
+        for (int j = 0; j < _incidentCount; j++) if (_incidents[j].IsOpen) result[k++] = _incidents[j];
         return result;
     }
 
-    public static string[] RepeatOffenders(int threshold)
+    // ---------- Filters: each returns an exact-size Asset[] ----------
+    // Two passes: count the matches, size the result, fill it.
+
+    public Asset[] OutOfWarranty(DateOnly asOf)
     {
         int matches = 0;
         for (int i = 0; i < _assetCount; i++)
         {
-            if (TriageRules.IsRepeatOffender(IncidentCountFor(_tags[i]), threshold)) matches++;
+            if (_assets[i].IsActive && _assets[i].IsOutOfWarranty(asOf)) matches++;
         }
 
-        string[] result = new string[matches];
+        Asset[] result = new Asset[matches];
         int k = 0;
         for (int i = 0; i < _assetCount; i++)
         {
-            if (TriageRules.IsRepeatOffender(IncidentCountFor(_tags[i]), threshold)) result[k++] = _tags[i];
+            if (_assets[i].IsActive && _assets[i].IsOutOfWarranty(asOf)) result[k++] = _assets[i];
         }
-
         return result;
     }
 
-    public static string[] RefreshCandidates(DateOnly asOf)
+    public Asset[] RepeatOffenders(int threshold)
     {
         int matches = 0;
         for (int i = 0; i < _assetCount; i++)
         {
-            if (IsRefreshEligibleRow(i, asOf)) matches++;
+            if (TriageRules.IsRepeatOffender(IncidentCountFor(_assets[i].AssetTag), threshold)) matches++;
         }
 
-        string[] result = new string[matches];
+        Asset[] result = new Asset[matches];
         int k = 0;
         for (int i = 0; i < _assetCount; i++)
         {
-            if (IsRefreshEligibleRow(i, asOf)) result[k++] = _tags[i];
+            if (TriageRules.IsRepeatOffender(IncidentCountFor(_assets[i].AssetTag), threshold)) result[k++] = _assets[i];
+        }
+        return result;
+    }
+
+    public Asset[] RefreshCandidates(DateOnly asOf)
+    {
+        int matches = 0;
+        for (int i = 0; i < _assetCount; i++)
+        {
+            if (_assets[i].IsRefreshEligible(asOf, OpenIncidentCount(_assets[i].AssetTag))) matches++;
         }
 
+        Asset[] result = new Asset[matches];
+        int k = 0;
+        for (int i = 0; i < _assetCount; i++)
+        {
+            if (_assets[i].IsRefreshEligible(asOf, OpenIncidentCount(_assets[i].AssetTag))) result[k++] = _assets[i];
+        }
         return result;
     }
 
     // ---------- Summary ----------
 
     /// <summary>Asset count and total purchase cost per type, one line each.</summary>
-    public static string SummaryByType()
+    public string SummaryByType()
     {
         string[] types = { "Laptop", "Desktop", "Peripheral" };
         string summary = "";
@@ -227,10 +162,10 @@ public static class Inventory
 
             for (int i = 0; i < _assetCount; i++)
             {
-                if (_types[i] == types[t])
+                if (_assets[i].AssetType == types[t])
                 {
                     count++;
-                    cost += _purchaseCosts[i];
+                    cost += _assets[i].PurchaseCost;
                 }
             }
 
@@ -238,27 +173,5 @@ public static class Inventory
         }
 
         return summary;
-    }
-
-    // ---------- Row-level helpers: glue between a table row and TriageRules ----------
-
-    private static bool IsOutOfWarrantyRow(int i, DateOnly asOf)
-    {
-        return TriageRules.IsActive(_statuses[i])
-            && TriageRules.IsOutOfWarranty(_purchaseDates[i], _warrantyMonths[i], asOf);
-    }
-
-    private static bool IsRefreshEligibleRow(int i, DateOnly asOf)
-    {
-        if (!TriageRules.IsActive(_statuses[i]))
-        {
-            return false;
-        }
-
-        int months = TriageRules.MonthsInService(_purchaseDates[i], asOf);
-        bool outOfWarranty = TriageRules.IsOutOfWarranty(_purchaseDates[i], _warrantyMonths[i], asOf);
-        int open = OpenIncidentCount(_tags[i]);
-
-        return TriageRules.IsRefreshEligible(_types[i], _statuses[i], months, outOfWarranty, open);
     }
 }

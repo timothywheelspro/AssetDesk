@@ -39,9 +39,9 @@ Nothing on this page exists that doesn't earn grade points.
 | `Program` — intake prompts, warranty-age and cost output | M1 | I/O, data types, arithmetic |
 | `TriageRules` | M3 | Pure testable functions |
 | `Inventory` | M3 (arrays are M3, confirmed 2026-09-15) | Fixed-size arrays with a count; search / filter / summary. **Extractable array utility.** |
-| `Asset`, `Incident`, `Technician` | M5 | Classes, encapsulation, constructor validation |
-| `Asset` → `Laptop` / `Desktop` / `Peripheral` | M6 | Inheritance, abstract members, polymorphic dispatch |
-| `AssetCsvImporter`, `ImportResult`, `RejectedRow` | M7 | Exception handling, file processing. **Extractable file utility.** |
+| `Asset`, `Incident`, `Technician` | M4 (confirmed 2026-09-15) | Classes, encapsulation, constructor validation |
+| `Asset` → `Laptop` / `Desktop` / `Peripheral` | M5? (confirm) | Inheritance, abstract members, polymorphic dispatch |
+| `AssetCsvImporter`, `ImportResult`, `RejectedRow` | M6/M7? (confirm) | Exception handling, file processing. **Extractable file utility.** |
 | All of it + README | M8 | Course project |
 
 ### Migration note (M3 → M6)
