@@ -45,6 +45,9 @@ Commit prefix: `feat(M3): ...`, `refactor(M6): ...`, `docs(M8): ...`.
 - State the actual console output in the commit body or PR description, not a paraphrase.
 - Do not report a file as existing, a test as passing, or a push as landed without having
   run the command in this session.
+- Before any claim about what a diff did or didn't touch goes into a commit body, a post,
+  or a review, run `git show --stat <sha>` (and `git diff --numstat` for the file in
+  question) and state what it says. "Didn't change a line" is a number, not an impression.
 
 ## 4. Reviewing another agent's work
 
