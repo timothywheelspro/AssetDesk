@@ -12,8 +12,9 @@ each module's work lands the week it is taught, so the log is dated proof of bui
 | Module | Lands | Uses only |
 |---|---|---|
 | M1 | `Program` intake + warranty-age/cost output | I/O, types, arithmetic |
-| M2–M3 | `TriageRules` — `static` pure functions on primitives | decisions, loops, methods |
-| M4 | `Inventory` — **fixed-size arrays + a count field. NOT `List<T>`.** | arrays |
+| M2 | `Program` loops over the CSV rows | decisions, loops |
+| M3 | `TriageRules` (static pure functions) **and** `Inventory` — **fixed-size arrays + a count field. NOT `List<T>`.** Parallel arrays until `Asset` exists. | methods, arrays |
+| M4 | *(confirm from zyBook — not yet known; do not assume)* | |
 | M5 | `Asset`, `Incident`, `Technician` classes; constructor validation | classes |
 | M6 | `abstract Asset` → `sealed Laptop/Desktop/Peripheral` | inheritance, polymorphism |
 | M7 | `AssetCsvImporter`, `ImportResult`, `RejectedRow` — **never throws** | exceptions, file I/O |
@@ -21,14 +22,14 @@ each module's work lands the week it is taught, so the log is dated proof of bui
 
 **Do not build ahead.** If a later module's construct would make this week's code nicer,
 write the simpler version now and refactor it when that module arrives. The refactor commit
-is itself evidence (e.g. M3's static warranty math moves into `Asset` in M5/M6).
+is itself evidence (e.g. M3's static warranty math and parallel arrays move into `Asset` / `Asset[]` when classes arrive).
 
 Commit prefix: `feat(M3): ...`, `refactor(M6): ...`, `docs(M8): ...`.
 
 ## 2. Hard technical constraints
 
 - Target `net8.0`. `DateOnly` is confirmed and preferred over `DateTime` for dates.
-- `Inventory` (M4) stores `Asset[]` / `Incident[]` with `_assetCount` / `_incidentCount`.
+- `Inventory` (M3) uses fixed-size arrays with `_assetCount` / `_incidentCount`. Parallel primitive arrays in M3; refactored to `Asset[]` / `Incident[]` when classes arrive (M5 in the July plan — confirm).
   No `List<T>`, no LINQ over collections until M8 unless the module explicitly covers it.
 - `AssetCsvImporter` (M7) returns an `ImportResult`; every failure mode lands in `Rejected`
   with line number and reason. Acceptance test: `data/assets.malformed.csv` →
