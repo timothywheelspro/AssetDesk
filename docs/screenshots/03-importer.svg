@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1103" height="1103" viewBox="0 0 1103 1103" font-family="SF Mono, Menlo, Consolas, monospace" font-size="13" data-window="1103x568">
+<g transform="translate(0,267)">
+<rect width="1103" height="568" rx="10" fill="#1e1e1e"/>
+<circle cx="20" cy="18" r="6" fill="#ff5f56"/><circle cx="40" cy="18" r="6" fill="#ffbd2e"/><circle cx="60" cy="18" r="6" fill="#27c93f"/>
+<text x="551.5" y="23" fill="#9a9a9a" text-anchor="middle" font-size="12">dotnet run — importer canary: malformed files and a missing file, 0 exceptions</text>
+<text x="18" y="56" fill="#9cdcfe" xml:space="preserve">Importer canary (must not throw):</text>
+<text x="18" y="75" fill="#d4d4d4" xml:space="preserve">  assets.malformed.csv: 2 imported, 8 rejected, 10 rows examined</text>
+<text x="18" y="94" fill="#f48771" xml:space="preserve">    ! line   3: purchase_date &#x27;not-a-date&#x27; is not a yyyy-MM-dd date</text>
+<text x="18" y="113" fill="#f48771" xml:space="preserve">    ! line   4: unknown type &#x27;Tablet&#x27;</text>
+<text x="18" y="132" fill="#f48771" xml:space="preserve">    ! line   5: purchase_cost -50.00 is negative</text>
+<text x="18" y="151" fill="#f48771" xml:space="preserve">    ! line   6: warranty_months &#x27;thirty-six&#x27; is not an integer</text>
+<text x="18" y="170" fill="#f48771" xml:space="preserve">    ! line   7: asset_tag is blank</text>
+<text x="18" y="189" fill="#f48771" xml:space="preserve">    ! line   8: expected 9 columns, found 6</text>
+<text x="18" y="208" fill="#f48771" xml:space="preserve">    ! line   9: duplicate asset_tag HR-L-0142 (first seen line 2)</text>
+<text x="18" y="227" fill="#f48771" xml:space="preserve">    ! line  10: unknown status &#x27;Broken&#x27;</text>
+<text x="18" y="246" fill="#89d185" xml:space="preserve">    + HR-L-0142 imported</text>
+<text x="18" y="265" fill="#89d185" xml:space="preserve">    + HR-L-0506 imported</text>
+<text x="18" y="284" fill="#d4d4d4" xml:space="preserve">  incidents.malformed.csv: 2 imported, 8 rejected, 10 rows examined</text>
+<text x="18" y="303" fill="#f48771" xml:space="preserve">    ! line   3: opened_on &#x27;not-a-date&#x27; is not a yyyy-MM-dd date</text>
+<text x="18" y="322" fill="#f48771" xml:space="preserve">    ! line   4: closed_on 2026-09-01 is before opened_on 2026-09-05</text>
+<text x="18" y="341" fill="#f48771" xml:space="preserve">    ! line   5: unknown priority &#x27;Urgent&#x27;</text>
+<text x="18" y="360" fill="#f48771" xml:space="preserve">    ! line   6: unknown category &#x27;Facilities&#x27;</text>
+<text x="18" y="379" fill="#f48771" xml:space="preserve">    ! line   7: incident_id is blank</text>
+<text x="18" y="398" fill="#f48771" xml:space="preserve">    ! line   8: duplicate incident_id INC-9001 (first seen line 2)</text>
+<text x="18" y="417" fill="#f48771" xml:space="preserve">    ! line   9: asset_tag HR-X-9999 is not in the inventory</text>
+<text x="18" y="436" fill="#f48771" xml:space="preserve">    ! line  10: expected 8 columns, found 6</text>
+<text x="18" y="455" fill="#89d185" xml:space="preserve">    + INC-9001 imported: Control row; valid</text>
+<text x="18" y="474" fill="#89d185" xml:space="preserve">    + INC-9008 imported: Keyboard sticky, coffee spill, keys replaced</text>
+<text x="18" y="493" fill="#d4d4d4" xml:space="preserve">  does-not-exist.csv:   0 imported, 1 rejected, 0 rows examined</text>
+<text x="18" y="512" fill="#f48771" xml:space="preserve">    ! file: file not found: /Users/timothywheels/Documents/GitHub/AssetDesk/bin/Debug/net8.0/data/does-not-exist.csv</text>
+<text x="18" y="531" fill="#89d185" xml:space="preserve">  CANARY PASSED: assets 2/8, incidents 2/8, missing file 0/1, 0 exceptions.</text>
+</g></svg>

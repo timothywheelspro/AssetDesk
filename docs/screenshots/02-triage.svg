@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1066" height="1066" viewBox="0 0 1066 1066" font-family="SF Mono, Menlo, Consolas, monospace" font-size="13" data-window="1066x492">
+<g transform="translate(0,287)">
+<rect width="1066" height="492" rx="10" fill="#1e1e1e"/>
+<circle cx="20" cy="18" r="6" fill="#ff5f56"/><circle cx="40" cy="18" r="6" fill="#ffbd2e"/><circle cx="60" cy="18" r="6" fill="#27c93f"/>
+<text x="533.0" y="23" fill="#9a9a9a" text-anchor="middle" font-size="12">dotnet run — open incidents by priority, lookup, polymorphic refresh policy</text>
+<text x="18" y="56" fill="#d4d4d4" xml:space="preserve"></text>
+<text x="18" y="75" fill="#9cdcfe" xml:space="preserve">Most urgent open incident:  INC-0431 on HR-L-0159 (Critical): Boot loop after repair return; user has no machine</text>
+<text x="18" y="94" fill="#9cdcfe" xml:space="preserve">Open incidents by priority: 9</text>
+<text x="18" y="113" fill="#d4d4d4" xml:space="preserve">  Critical  INC-0431  HR-L-0159   28d  Boot loop after repair return; user has no machine</text>
+<text x="18" y="132" fill="#d4d4d4" xml:space="preserve">  High      INC-0417  HR-L-0142   55d  Won&#x27;t charge on dock; battery at 61% health</text>
+<text x="18" y="151" fill="#d4d4d4" xml:space="preserve">  High      INC-0421  HR-L-0159   48d  Screen flicker returned; sent for repair</text>
+<text x="18" y="170" fill="#d4d4d4" xml:space="preserve">  High      INC-0430  HR-P-0230   33d  Dock dead; no power LED; awaiting triage</text>
+<text x="18" y="189" fill="#d4d4d4" xml:space="preserve">  Medium    INC-0427  HR-L-0171   40d  Drops Wi-Fi in conference room A only</text>
+<text x="18" y="208" fill="#d4d4d4" xml:space="preserve">  Medium    INC-0428  HR-D-0031   35d  Fan noise under load; thermal paste suspected</text>
+<text x="18" y="227" fill="#d4d4d4" xml:space="preserve">  Medium    INC-0436  HR-L-0143   19d  Hinge loose; screen won&#x27;t stay upright</text>
+<text x="18" y="246" fill="#d4d4d4" xml:space="preserve">  Low       INC-0435  HR-P-0245   21d  Left earcup crackle</text>
+<text x="18" y="265" fill="#d4d4d4" xml:space="preserve">  Low       INC-0438  HR-D-0055   14d  Local admin request for dev tooling</text>
+<text x="18" y="284" fill="#d4d4d4" xml:space="preserve"></text>
+<text x="18" y="303" fill="#d4d4d4" xml:space="preserve">Lookup HR-L-0159:           HP EliteBook 840 G9, assigned to rokafor, InRepair</text>
+<text x="18" y="322" fill="#d4d4d4" xml:space="preserve"></text>
+<text x="18" y="341" fill="#9cdcfe" xml:space="preserve">Refresh policy by type (one call, three overrides):</text>
+<text x="18" y="360" fill="#d4d4d4" xml:space="preserve">  HR-L-0171  Laptop      Lenovo ThinkPad T14 Gen 3 InService  sbrennan</text>
+<text x="18" y="379" fill="#d4d4d4" xml:space="preserve">      cycle 36mo  age 36mo  open 1  value    0.00  refresh: True</text>
+<text x="18" y="398" fill="#d4d4d4" xml:space="preserve">  HR-D-0031  Desktop     Dell OptiPlex 7090       InService  front-desk-2</text>
+<text x="18" y="417" fill="#d4d4d4" xml:space="preserve">      cycle 60mo  age 61mo  open 1  value    0.00  refresh: True</text>
+<text x="18" y="436" fill="#d4d4d4" xml:space="preserve">  HR-P-0230  Peripheral  Dell WD19S Dock          InRepair   jmartinez  (Dock)</text>
+<text x="18" y="455" fill="#d4d4d4" xml:space="preserve">      cycle  0mo  age 43mo  open 1  value    0.00  refresh: True</text>
+</g></svg>

@@ -1,0 +1,96 @@
+AssetDesk
+Find the endpoints that are out of warranty or keep coming back — before they turn into tickets.
+
+assets.csv: 30 imported, 0 rejected, 30 rows examined
+incidents.csv: 18 imported, 0 rejected, 18 rows examined
+As of 2026-09-15  |  30 assets, 18 incidents
+
+TAG        TYPE        AGE(mo)  WARRANTY      VALUE     INC  OPEN  FLAG
+---------- ----------- -------  ------------  --------  ---  ----  -----------------
+HR-L-0099  Laptop           71  EXPIRED           0.00    0     0  retired
+HR-L-0142  Laptop           54  EXPIRED           0.00    3     1  REFRESH + REPEAT
+HR-L-0143  Laptop           54  EXPIRED           0.00    1     1  REFRESH
+HR-L-0158  Laptop           44  EXPIRED           0.00    0     0  REFRESH
+HR-L-0159  Laptop           44  EXPIRED           0.00    3     2  REFRESH + REPEAT
+HR-L-0171  Laptop           36  EXPIRED           0.00    1     1  REFRESH
+HR-L-0172  Laptop           36  EXPIRED           0.00    0     0  REFRESH
+HR-L-0190  Laptop           28  to 2027-05      335.56    1     0  
+HR-L-0191  Laptop           28  to 2027-05      335.56    0     0  
+HR-L-0204  Laptop           21  EXPIRED         916.25    1     0  
+HR-L-0215  Laptop           15  to 2028-06      786.92    0     0  
+HR-L-0216  Laptop           15  to 2028-06      786.92    0     0  
+HR-D-0012  Desktop          82  EXPIRED           0.00    0     0  disposed
+HR-D-0031  Desktop          61  EXPIRED           0.00    2     1  REFRESH + REPEAT
+HR-D-0032  Desktop          61  EXPIRED           0.00    1     0  REFRESH
+HR-D-0040  Desktop          46  to 2027-10      221.43    0     0  
+HR-D-0041  Desktop          46  to 2027-10      221.43    0     0  
+HR-D-0055  Desktop          30  to 2027-02      514.50    1     1  
+HR-D-0056  Desktop          30  to 2027-02      514.50    0     0  
+HR-D-0060  Desktop          18  to 2028-03      615.30    0     0  
+HR-P-0180  Peripheral       88  EXPIRED           0.00    0     0  retired
+HR-P-0210  Peripheral       43  EXPIRED           0.00    0     0  
+HR-P-0211  Peripheral       43  EXPIRED           0.00    0     0  
+HR-P-0230  Peripheral       43  EXPIRED           0.00    2     1  REFRESH + REPEAT
+HR-P-0231  Peripheral       43  EXPIRED           0.00    0     0  
+HR-P-0245  Peripheral       29  EXPIRED           0.00    1     1  REFRESH
+HR-P-0246  Peripheral       29  EXPIRED           0.00    0     0  
+HR-P-0260  Peripheral       63  EXPIRED           0.00    1     0  
+HR-P-0270  Peripheral       19  EXPIRED           0.00    0     0  
+HR-P-0275  Peripheral       13  to 2028-08        0.00    0     0  
+
+Out of warranty (active):   17
+Repeat offenders (>= 2):    4   HR-L-0142, HR-L-0159, HR-D-0031, HR-P-0230
+Refresh candidates:         10   HR-L-0142, HR-L-0143, HR-L-0158, HR-L-0159, HR-L-0171, HR-L-0172, HR-D-0031, HR-D-0032, HR-P-0230, HR-P-0245
+
+Laptop       12 assets    16942.00
+Desktop       8 assets     7382.00
+Peripheral   10 assets     2520.00
+
+Most urgent open incident:  INC-0431 on HR-L-0159 (Critical): Boot loop after repair return; user has no machine
+Open incidents by priority: 9
+  Critical  INC-0431  HR-L-0159   28d  Boot loop after repair return; user has no machine
+  High      INC-0417  HR-L-0142   55d  Won't charge on dock; battery at 61% health
+  High      INC-0421  HR-L-0159   48d  Screen flicker returned; sent for repair
+  High      INC-0430  HR-P-0230   33d  Dock dead; no power LED; awaiting triage
+  Medium    INC-0427  HR-L-0171   40d  Drops Wi-Fi in conference room A only
+  Medium    INC-0428  HR-D-0031   35d  Fan noise under load; thermal paste suspected
+  Medium    INC-0436  HR-L-0143   19d  Hinge loose; screen won't stay upright
+  Low       INC-0435  HR-P-0245   21d  Left earcup crackle
+  Low       INC-0438  HR-D-0055   14d  Local admin request for dev tooling
+
+Lookup HR-L-0159:           HP EliteBook 840 G9, assigned to rokafor, InRepair
+
+Refresh policy by type (one call, three overrides):
+  HR-L-0171  Laptop      Lenovo ThinkPad T14 Gen 3 InService  sbrennan
+      cycle 36mo  age 36mo  open 1  value    0.00  refresh: True
+  HR-D-0031  Desktop     Dell OptiPlex 7090       InService  front-desk-2
+      cycle 60mo  age 61mo  open 1  value    0.00  refresh: True
+  HR-P-0230  Peripheral  Dell WD19S Dock          InRepair   jmartinez  (Dock)
+      cycle  0mo  age 43mo  open 1  value    0.00  refresh: True
+
+Importer canary (must not throw):
+  assets.malformed.csv: 2 imported, 8 rejected, 10 rows examined
+    ! line   3: purchase_date 'not-a-date' is not a yyyy-MM-dd date
+    ! line   4: unknown type 'Tablet'
+    ! line   5: purchase_cost -50.00 is negative
+    ! line   6: warranty_months 'thirty-six' is not an integer
+    ! line   7: asset_tag is blank
+    ! line   8: expected 9 columns, found 6
+    ! line   9: duplicate asset_tag HR-L-0142 (first seen line 2)
+    ! line  10: unknown status 'Broken'
+    + HR-L-0142 imported
+    + HR-L-0506 imported
+  incidents.malformed.csv: 2 imported, 8 rejected, 10 rows examined
+    ! line   3: opened_on 'not-a-date' is not a yyyy-MM-dd date
+    ! line   4: closed_on 2026-09-01 is before opened_on 2026-09-05
+    ! line   5: unknown priority 'Urgent'
+    ! line   6: unknown category 'Facilities'
+    ! line   7: incident_id is blank
+    ! line   8: duplicate incident_id INC-9001 (first seen line 2)
+    ! line   9: asset_tag HR-X-9999 is not in the inventory
+    ! line  10: expected 8 columns, found 6
+    + INC-9001 imported: Control row; valid
+    + INC-9008 imported: Keyboard sticky, coffee spill, keys replaced
+  does-not-exist.csv:   0 imported, 1 rejected, 0 rows examined
+    ! file: file not found: /Users/timothywheels/Documents/GitHub/AssetDesk/bin/Debug/net8.0/data/does-not-exist.csv
+  CANARY PASSED: assets 2/8, incidents 2/8, missing file 0/1, 0 exceptions.

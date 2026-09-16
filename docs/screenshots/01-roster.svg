@@ -1,0 +1,53 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1333" height="1333" viewBox="0 0 1333 1333" font-family="SF Mono, Menlo, Consolas, monospace" font-size="13" data-window="1333x967">
+<g transform="translate(0,183)">
+<rect width="1333" height="967" rx="10" fill="#1e1e1e"/>
+<circle cx="20" cy="18" r="6" fill="#ff5f56"/><circle cx="40" cy="18" r="6" fill="#ffbd2e"/><circle cx="60" cy="18" r="6" fill="#27c93f"/>
+<text x="666.5" y="23" fill="#9a9a9a" text-anchor="middle" font-size="12">dotnet run — roster with warranty status, value, and refresh flags</text>
+<text x="18" y="56" fill="#9cdcfe" xml:space="preserve">AssetDesk</text>
+<text x="18" y="75" fill="#d4d4d4" xml:space="preserve">Find the endpoints that are out of warranty or keep coming back — before they turn into tickets.</text>
+<text x="18" y="94" fill="#d4d4d4" xml:space="preserve"></text>
+<text x="18" y="113" fill="#d4d4d4" xml:space="preserve">assets.csv: 30 imported, 0 rejected, 30 rows examined</text>
+<text x="18" y="132" fill="#d4d4d4" xml:space="preserve">incidents.csv: 18 imported, 0 rejected, 18 rows examined</text>
+<text x="18" y="151" fill="#d4d4d4" xml:space="preserve">As of 2026-09-15  |  30 assets, 18 incidents</text>
+<text x="18" y="170" fill="#d4d4d4" xml:space="preserve"></text>
+<text x="18" y="189" fill="#9cdcfe" xml:space="preserve">TAG        TYPE        AGE(mo)  WARRANTY      VALUE     INC  OPEN  FLAG</text>
+<text x="18" y="208" fill="#9cdcfe" xml:space="preserve">---------- ----------- -------  ------------  --------  ---  ----  -----------------</text>
+<text x="18" y="227" fill="#d4d4d4" xml:space="preserve">HR-L-0099  Laptop           71  EXPIRED           0.00    0     0  retired</text>
+<text x="18" y="246" fill="#e5c07b" xml:space="preserve">HR-L-0142  Laptop           54  EXPIRED           0.00    3     1  REFRESH + REPEAT</text>
+<text x="18" y="265" fill="#e5c07b" xml:space="preserve">HR-L-0143  Laptop           54  EXPIRED           0.00    1     1  REFRESH</text>
+<text x="18" y="284" fill="#e5c07b" xml:space="preserve">HR-L-0158  Laptop           44  EXPIRED           0.00    0     0  REFRESH</text>
+<text x="18" y="303" fill="#e5c07b" xml:space="preserve">HR-L-0159  Laptop           44  EXPIRED           0.00    3     2  REFRESH + REPEAT</text>
+<text x="18" y="322" fill="#e5c07b" xml:space="preserve">HR-L-0171  Laptop           36  EXPIRED           0.00    1     1  REFRESH</text>
+<text x="18" y="341" fill="#e5c07b" xml:space="preserve">HR-L-0172  Laptop           36  EXPIRED           0.00    0     0  REFRESH</text>
+<text x="18" y="360" fill="#d4d4d4" xml:space="preserve">HR-L-0190  Laptop           28  to 2027-05      335.56    1     0</text>
+<text x="18" y="379" fill="#d4d4d4" xml:space="preserve">HR-L-0191  Laptop           28  to 2027-05      335.56    0     0</text>
+<text x="18" y="398" fill="#d4d4d4" xml:space="preserve">HR-L-0204  Laptop           21  EXPIRED         916.25    1     0</text>
+<text x="18" y="417" fill="#d4d4d4" xml:space="preserve">HR-L-0215  Laptop           15  to 2028-06      786.92    0     0</text>
+<text x="18" y="436" fill="#d4d4d4" xml:space="preserve">HR-L-0216  Laptop           15  to 2028-06      786.92    0     0</text>
+<text x="18" y="455" fill="#d4d4d4" xml:space="preserve">HR-D-0012  Desktop          82  EXPIRED           0.00    0     0  disposed</text>
+<text x="18" y="474" fill="#e5c07b" xml:space="preserve">HR-D-0031  Desktop          61  EXPIRED           0.00    2     1  REFRESH + REPEAT</text>
+<text x="18" y="493" fill="#e5c07b" xml:space="preserve">HR-D-0032  Desktop          61  EXPIRED           0.00    1     0  REFRESH</text>
+<text x="18" y="512" fill="#d4d4d4" xml:space="preserve">HR-D-0040  Desktop          46  to 2027-10      221.43    0     0</text>
+<text x="18" y="531" fill="#d4d4d4" xml:space="preserve">HR-D-0041  Desktop          46  to 2027-10      221.43    0     0</text>
+<text x="18" y="550" fill="#d4d4d4" xml:space="preserve">HR-D-0055  Desktop          30  to 2027-02      514.50    1     1</text>
+<text x="18" y="569" fill="#d4d4d4" xml:space="preserve">HR-D-0056  Desktop          30  to 2027-02      514.50    0     0</text>
+<text x="18" y="588" fill="#d4d4d4" xml:space="preserve">HR-D-0060  Desktop          18  to 2028-03      615.30    0     0</text>
+<text x="18" y="607" fill="#d4d4d4" xml:space="preserve">HR-P-0180  Peripheral       88  EXPIRED           0.00    0     0  retired</text>
+<text x="18" y="626" fill="#d4d4d4" xml:space="preserve">HR-P-0210  Peripheral       43  EXPIRED           0.00    0     0</text>
+<text x="18" y="645" fill="#d4d4d4" xml:space="preserve">HR-P-0211  Peripheral       43  EXPIRED           0.00    0     0</text>
+<text x="18" y="664" fill="#e5c07b" xml:space="preserve">HR-P-0230  Peripheral       43  EXPIRED           0.00    2     1  REFRESH + REPEAT</text>
+<text x="18" y="683" fill="#d4d4d4" xml:space="preserve">HR-P-0231  Peripheral       43  EXPIRED           0.00    0     0</text>
+<text x="18" y="702" fill="#e5c07b" xml:space="preserve">HR-P-0245  Peripheral       29  EXPIRED           0.00    1     1  REFRESH</text>
+<text x="18" y="721" fill="#d4d4d4" xml:space="preserve">HR-P-0246  Peripheral       29  EXPIRED           0.00    0     0</text>
+<text x="18" y="740" fill="#d4d4d4" xml:space="preserve">HR-P-0260  Peripheral       63  EXPIRED           0.00    1     0</text>
+<text x="18" y="759" fill="#d4d4d4" xml:space="preserve">HR-P-0270  Peripheral       19  EXPIRED           0.00    0     0</text>
+<text x="18" y="778" fill="#d4d4d4" xml:space="preserve">HR-P-0275  Peripheral       13  to 2028-08        0.00    0     0</text>
+<text x="18" y="797" fill="#d4d4d4" xml:space="preserve"></text>
+<text x="18" y="816" fill="#9cdcfe" xml:space="preserve">Out of warranty (active):   17</text>
+<text x="18" y="835" fill="#9cdcfe" xml:space="preserve">Repeat offenders (&gt;= 2):    4   HR-L-0142, HR-L-0159, HR-D-0031, HR-P-0230</text>
+<text x="18" y="854" fill="#9cdcfe" xml:space="preserve">Refresh candidates:         10   HR-L-0142, HR-L-0143, HR-L-0158, HR-L-0159, HR-L-0171, HR-L-0172, HR-D-0031, HR-D-0032, HR-P-0230, HR-P-0245</text>
+<text x="18" y="873" fill="#d4d4d4" xml:space="preserve"></text>
+<text x="18" y="892" fill="#d4d4d4" xml:space="preserve">Laptop       12 assets    16942.00</text>
+<text x="18" y="911" fill="#d4d4d4" xml:space="preserve">Desktop       8 assets     7382.00</text>
+<text x="18" y="930" fill="#d4d4d4" xml:space="preserve">Peripheral   10 assets     2520.00</text>
+</g></svg>
