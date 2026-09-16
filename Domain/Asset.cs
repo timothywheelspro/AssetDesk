@@ -2,9 +2,10 @@
 //
 // Identity is fixed at construction and validated once, here, so no subclass
 // can produce an invalid asset. Shared math (warranty, months in service,
-// straight-line depreciation) is written once. The two things that genuinely
-// differ per type — what the asset is worth and when it should be replaced —
-// are abstract, because the policies differ in kind, not just in number.
+// straight-line depreciation) is written once. What genuinely differs per
+// type — the refresh schedule and when to replace — is abstract, because the
+// policies differ in kind, not just in number. Book value is NOT here: only
+// some assets depreciate, and those implement IDepreciable.
 
 namespace AssetDesk.Domain;
 
@@ -70,9 +71,6 @@ public abstract class Asset
     /// <summary>Planned service life in months. Zero means "no schedule; replace on failure".</summary>
     public abstract int RefreshCycleMonths { get; }
 
-    /// <summary>Book value on the given date under this type's depreciation policy.</summary>
-    public abstract decimal CurrentValue(DateOnly asOf);
-
     /// <summary>
     /// True when this asset should be flagged for replacement. Age-driven for computers,
     /// failure-driven for peripherals — which is why it is abstract and not a number.
@@ -91,7 +89,7 @@ public abstract class Asset
     /// <summary>Retired and Disposed assets are out of scope for triage.</summary>
     public bool IsActive => Status != AssetStatus.Retired && Status != AssetStatus.Disposed;
 
-    /// <summary>Straight-line depreciation to zero over lifeMonths. Subclasses opt in by calling it.</summary>
+    /// <summary>Straight-line depreciation to zero over lifeMonths. IDepreciable subclasses call this.</summary>
     protected decimal StraightLineValue(DateOnly asOf, int lifeMonths)
     {
         if (lifeMonths <= 0) return 0m;

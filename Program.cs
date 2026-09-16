@@ -72,7 +72,11 @@ for (int i = 0; i < inventory.AssetCount; i++)
     else if (refresh)            flag = "REFRESH";
     else if (repeat)             flag = "repeat";
 
-    Console.WriteLine($"{a.AssetTag,-10} {a.AssetType,-11} {months,7}  {warranty,-12}  {a.CurrentValue(asOf),8:F2}  {incidentCount,3}  {openIncidents,4}  {flag}");
+    // Only assets that CAN depreciate are asked what they're worth. The roster
+    // loop never names a subclass; it asks for the capability.
+    string value = a is IDepreciable d ? d.CurrentValue(asOf).ToString("F2") : "expensed";
+
+    Console.WriteLine($"{a.AssetTag,-10} {a.AssetType,-11} {months,7}  {warranty,-12}  {value,8}  {incidentCount,3}  {openIncidents,4}  {flag}");
 }
 
 Console.WriteLine();
@@ -116,7 +120,8 @@ for (int i = 0; i < sampleTags.Length; i++)
     if (a == null) continue;
     int openCount = inventory.OpenIncidentCount(a.AssetTag);
     Console.WriteLine($"  {a.ToRosterLine()}");
-    Console.WriteLine($"      cycle {a.RefreshCycleMonths,2}mo  age {a.MonthsInService(asOf),2}mo  open {openCount}  value {a.CurrentValue(asOf),7:F2}  refresh: {a.IsRefreshEligible(asOf, openCount)}");
+    string worth = a is IDepreciable dep ? $"value {dep.CurrentValue(asOf),7:F2}" : "value expensed";
+    Console.WriteLine($"      cycle {a.RefreshCycleMonths,2}mo  age {a.MonthsInService(asOf),2}mo  open {openCount}  {worth}  refresh: {a.IsRefreshEligible(asOf, openCount)}");
 }
 
 // Local helper: comma-joined tags from an Asset[].

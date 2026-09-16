@@ -27,16 +27,16 @@ HR-D-0041  Desktop          46  to 2027-10      221.43    0     0
 HR-D-0055  Desktop          30  to 2027-02      514.50    1     1  
 HR-D-0056  Desktop          30  to 2027-02      514.50    0     0  
 HR-D-0060  Desktop          18  to 2028-03      615.30    0     0  
-HR-P-0180  Peripheral       88  EXPIRED           0.00    0     0  retired
-HR-P-0210  Peripheral       43  EXPIRED           0.00    0     0  
-HR-P-0211  Peripheral       43  EXPIRED           0.00    0     0  
-HR-P-0230  Peripheral       43  EXPIRED           0.00    2     1  REFRESH + REPEAT
-HR-P-0231  Peripheral       43  EXPIRED           0.00    0     0  
-HR-P-0245  Peripheral       29  EXPIRED           0.00    1     1  REFRESH
-HR-P-0246  Peripheral       29  EXPIRED           0.00    0     0  
-HR-P-0260  Peripheral       63  EXPIRED           0.00    1     0  
-HR-P-0270  Peripheral       19  EXPIRED           0.00    0     0  
-HR-P-0275  Peripheral       13  to 2028-08        0.00    0     0  
+HR-P-0180  Peripheral       88  EXPIRED       expensed    0     0  retired
+HR-P-0210  Peripheral       43  EXPIRED       expensed    0     0  
+HR-P-0211  Peripheral       43  EXPIRED       expensed    0     0  
+HR-P-0230  Peripheral       43  EXPIRED       expensed    2     1  REFRESH + REPEAT
+HR-P-0231  Peripheral       43  EXPIRED       expensed    0     0  
+HR-P-0245  Peripheral       29  EXPIRED       expensed    1     1  REFRESH
+HR-P-0246  Peripheral       29  EXPIRED       expensed    0     0  
+HR-P-0260  Peripheral       63  EXPIRED       expensed    1     0  
+HR-P-0270  Peripheral       19  EXPIRED       expensed    0     0  
+HR-P-0275  Peripheral       13  to 2028-08    expensed    0     0  
 
 Out of warranty (active):   17
 Repeat offenders (>= 2):    4   HR-L-0142, HR-L-0159, HR-D-0031, HR-P-0230
@@ -66,7 +66,7 @@ Refresh policy by type (one call, three overrides):
   HR-D-0031  Desktop     Dell OptiPlex 7090       InService  front-desk-2
       cycle 60mo  age 61mo  open 1  value    0.00  refresh: True
   HR-P-0230  Peripheral  Dell WD19S Dock          InRepair   jmartinez  (Dock)
-      cycle  0mo  age 43mo  open 1  value    0.00  refresh: True
+      cycle  0mo  age 43mo  open 1  value expensed  refresh: True
 
 Importer canary (must not throw):
   assets.malformed.csv: 2 imported, 8 rejected, 10 rows examined

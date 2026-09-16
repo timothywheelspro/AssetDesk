@@ -4,7 +4,7 @@
 
 namespace AssetDesk.Domain;
 
-public sealed class Desktop : Asset
+public sealed class Desktop : Asset, IDepreciable
 {
     /// <summary>Physical location (room, desk). Empty when unknown.</summary>
     public string Location { get; set; }
@@ -22,8 +22,9 @@ public sealed class Desktop : Asset
     public override string AssetType => "Desktop";
     public override int RefreshCycleMonths => 60;
 
-    public override decimal CurrentValue(DateOnly asOf) =>
-        StraightLineValue(asOf, RefreshCycleMonths);
+    // IDepreciable: written down over the same span as the refresh cycle.
+    public int DepreciationLifeMonths => RefreshCycleMonths;
+    public decimal CurrentValue(DateOnly asOf) => StraightLineValue(asOf, DepreciationLifeMonths);
 
     // Age-driven, with a higher ticket threshold than a laptop.
     public override bool IsRefreshEligible(DateOnly asOf, int openIncidentCount) =>

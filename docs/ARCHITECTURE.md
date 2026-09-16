@@ -76,12 +76,16 @@ classDiagram
         +DateOnly WarrantyExpires
         +MonthsInService(DateOnly asOf) int
         +IsOutOfWarranty(DateOnly asOf) bool
-        +CurrentValue(DateOnly asOf) decimal*
         +IsRefreshEligible(DateOnly asOf, int openIncidents) bool*
         #StraightLineValue(DateOnly asOf, int lifeMonths) decimal
         +ToRosterLine() string
     }
 
+    class IDepreciable {
+        <<interface>>
+        +int DepreciationLifeMonths
+        +CurrentValue(DateOnly asOf) decimal
+    }
     class Laptop {
         +bool HasDock
         +AssetType "Laptop"
@@ -143,6 +147,8 @@ classDiagram
     Asset <|-- Laptop
     Asset <|-- Desktop
     Asset <|-- Peripheral
+    IDepreciable <|.. Laptop
+    IDepreciable <|.. Desktop
     Incident "0..*" --> "1" Asset : AssetTag
     Incident "0..*" --> "0..1" Technician : TechId
     Asset --> AssetStatus
@@ -255,10 +261,9 @@ public abstract class Asset
         WarrantyMonths = warrantyMonths;
     }
 
-    // The contract
+    // The contract (CurrentValue is NOT here — see IDepreciable, M6)
     public abstract string AssetType { get; }
     public abstract int RefreshCycleMonths { get; }         // 0 = replace on failure
-    public abstract decimal CurrentValue(DateOnly asOf);
     public abstract bool IsRefreshEligible(DateOnly asOf, int openIncidentCount);
 
     // Shared behaviour
@@ -333,6 +338,30 @@ public sealed class Laptop : Asset
 - Validation lives in the base constructor: one gate, enforced once. Same principle as the
   importer — garbage stops at the boundary.
 - Subclasses are `sealed`.
+
+### Why there IS an interface after all — `IDepreciable` (M6 design note)
+
+Until M6, `CurrentValue` was abstract on `Asset` and `Peripheral` returned `0m` to satisfy
+it. That was a stub: a peripheral is expensed at purchase, so it doesn't have a book value
+of zero — it doesn't have a book value. The difference between "worth nothing" and "not a
+thing that is worth" is exactly what an interface expresses.
+
+```csharp
+public interface IDepreciable
+{
+    int DepreciationLifeMonths { get; }
+    decimal CurrentValue(DateOnly asOf);
+}
+```
+
+`Laptop` and `Desktop` implement it (life = refresh cycle, straight-line via the protected
+helper on `Asset`). `Peripheral` does not. The roster asks `a is IDepreciable d` and prints
+`expensed` otherwise. Rule: never add a zero-returning `CurrentValue` to make a caller
+compile — the caller should ask for the capability.
+
+So the answer to "abstract class or interface?" is *both, for different jobs*: the abstract
+class for what every asset **is** (state + shared math), the interface for what only some
+assets **can do**.
 
 ---
 

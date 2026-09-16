@@ -3,7 +3,7 @@
 
 namespace AssetDesk.Domain;
 
-public sealed class Laptop : Asset
+public sealed class Laptop : Asset, IDepreciable
 {
     public bool HasDock { get; set; }
 
@@ -20,8 +20,9 @@ public sealed class Laptop : Asset
     public override string AssetType => "Laptop";
     public override int RefreshCycleMonths => 36;
 
-    public override decimal CurrentValue(DateOnly asOf) =>
-        StraightLineValue(asOf, RefreshCycleMonths);
+    // IDepreciable: written down over the same span as the refresh cycle.
+    public int DepreciationLifeMonths => RefreshCycleMonths;
+    public decimal CurrentValue(DateOnly asOf) => StraightLineValue(asOf, DepreciationLifeMonths);
 
     // Age-driven: past the cycle, or out of warranty and generating repeat tickets.
     public override bool IsRefreshEligible(DateOnly asOf, int openIncidentCount) =>

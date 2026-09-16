@@ -1,6 +1,7 @@
 // Domain/Peripheral.cs — Module 5: monitors, docks, headsets, printers.
-// Failure-driven, not age-driven: no depreciation (expensed at purchase),
-// no scheduled refresh; replace when it breaks and isn't worth fixing.
+// Failure-driven, not age-driven: no scheduled refresh; replace when it breaks
+// and isn't worth fixing. Does NOT implement IDepreciable — a peripheral is
+// expensed at purchase, so "what is it worth today?" is not a question it answers.
 
 namespace AssetDesk.Domain;
 
@@ -21,8 +22,6 @@ public sealed class Peripheral : Asset
 
     public override string AssetType => "Peripheral";
     public override int RefreshCycleMonths => 0;      // no schedule
-
-    public override decimal CurrentValue(DateOnly asOf) => 0m;   // expensed at purchase
 
     // Failure-driven: in repair, or out of warranty with any open ticket
     // (cheaper to replace than to fix).

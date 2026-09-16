@@ -11,7 +11,7 @@ devices that generated them, and tells you which endpoints to refresh
 before they become tickets.
 
 > **Status:** course project for DeVry SIS250 (Intermediate Programming, C#), Fall 2026.
-> Modules 3–6 complete. **License:** MIT.
+> Modules 1–6 complete. **License:** MIT.
 
 ## Run it
 
@@ -59,7 +59,7 @@ An asset is flagged for refresh when its type's policy says so. The policies dif
 |---|---|---|---|
 | Laptop | 36 months | straight-line to zero over the cycle | age ≥ 36 mo, **or** out of warranty with ≥ 2 open incidents |
 | Desktop | 60 months | straight-line to zero over the cycle | age ≥ 60 mo, **or** out of warranty with ≥ 3 open incidents |
-| Peripheral | none | 0 — expensed at purchase | in repair, **or** out of warranty with any open incident |
+| Peripheral | none | none — expensed at purchase (not `IDepreciable`) | in repair, **or** out of warranty with any open incident |
 
 Retired and disposed assets are excluded. A *repeat offender* is any asset with ≥ 2
 incidents on record. Full rationale in [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md).
@@ -73,9 +73,10 @@ AssetDesk/
 ├── Inventory.cs               Asset[] / Incident[] with counts; search, filters, summary
 ├── Domain/
 │   ├── Asset.cs               abstract base: identity, validation, warranty math
-│   ├── Laptop.cs              sealed; 36-month policy
-│   ├── Desktop.cs             sealed; 60-month policy
-│   ├── Peripheral.cs          sealed; failure-driven policy
+│   ├── IDepreciable.cs        capability: book value over a planned life
+│   ├── Laptop.cs              sealed, IDepreciable; 36-month policy
+│   ├── Desktop.cs             sealed, IDepreciable; 60-month policy
+│   ├── Peripheral.cs          sealed, not depreciable; failure-driven policy
 │   ├── Incident.cs
 │   └── Technician.cs
 ├── Import/
@@ -91,10 +92,12 @@ AssetDesk/
 
 - **`Inventory` is fixed-size arrays with a count, not `List<T>`.** Filters return exact-size
   arrays via count-then-fill. The cost of that pattern is the point: it's why collections exist.
-- **`Asset` is an abstract class, not an interface.** It owns real state (tag, cost,
-  warranty) and real shared logic (warranty math, straight-line depreciation). An interface
-  can't carry that. Only the two things that genuinely differ per type — `CurrentValue`
-  and `IsRefreshEligible` — are abstract. Subclasses are `sealed`.
+- **`Asset` is an abstract class; `IDepreciable` is an interface. Both, for different jobs.**
+  The abstract class holds what every asset *is*: real state (tag, cost, warranty) and shared
+  math. The interface holds what only some assets *can do*: laptops and desktops lose book
+  value over a planned life; peripherals are expensed at purchase and don't implement it at
+  all. The roster asks `a is IDepreciable` rather than checking a type — and prints
+  `expensed` when the answer is no. Subclasses are `sealed`.
 - **Validation happens once, at the boundary.** The importers reject bad rows; the domain
   constructors reject bad values. Nothing downstream checks for garbage because none gets through.
 - **Two kinds of failure, handled two ways.** Bad input we can see coming (`not-a-date`,
@@ -115,6 +118,7 @@ at every step — the structure changed underneath a fixed result.
 | M4 classes | [`54ddbb8`](https://github.com/timothywheelspro/AssetDesk/commit/54ddbb8) | `Asset`, `Incident`, `Technician`; parallel arrays collapse into `Asset[]` |
 | M5 inheritance | [`33dfe26`](https://github.com/timothywheelspro/AssetDesk/commit/33dfe26) | `Asset` goes abstract; the switches leave `TriageRules` (−90 lines) for three overrides |
 | M6 exceptions & files | [`4f99bc8`](https://github.com/timothywheelspro/AssetDesk/commit/4f99bc8), [`ab417d8`](https://github.com/timothywheelspro/AssetDesk/commit/ab417d8) | The importers; `Program.cs` loses its last `Parse()` call |
+| M6 interfaces | *(this commit)* | `IDepreciable` on `Laptop`/`Desktop`; `Peripheral` stops returning a fake zero |
 
 ## Data
 

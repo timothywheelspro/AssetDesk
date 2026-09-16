@@ -24,5 +24,5 @@
 <text x="18" y="398" fill="#d4d4d4" xml:space="preserve">  HR-D-0031  Desktop     Dell OptiPlex 7090       InService  front-desk-2</text>
 <text x="18" y="417" fill="#d4d4d4" xml:space="preserve">      cycle 60mo  age 61mo  open 1  value    0.00  refresh: True</text>
 <text x="18" y="436" fill="#d4d4d4" xml:space="preserve">  HR-P-0230  Peripheral  Dell WD19S Dock          InRepair   jmartinez  (Dock)</text>
-<text x="18" y="455" fill="#d4d4d4" xml:space="preserve">      cycle  0mo  age 43mo  open 1  value    0.00  refresh: True</text>
+<text x="18" y="455" fill="#d4d4d4" xml:space="preserve">      cycle  0mo  age 43mo  open 1  value expensed  refresh: True</text>
 </g></svg>
